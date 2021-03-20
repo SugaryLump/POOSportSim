@@ -3,14 +3,14 @@ package Classes;
 import java.util.List;
 
 public class Team {
-    // lista de jogadores, pontuaçao vitorias, derrotas, ties, nome da equipa, teamid
-    public String teamName;
-    public int score;
-    public int wins;
-    public int losses;
-    public int ties;
-    public int teamID;
-    public List<Player> playerList;
+    public String teamName; //Team name
+    public int score; // Points in scoreboard per season
+    public int wins; // Wins per seasona
+    public int losses; //Losses per season
+    public int ties; // Ties per season
+    public int teamID; // Team Id
+    public int teamGlobalAbillity; // Team Global Average Abillity
+    public List<Player> playerList; // Player List
 
     public String getTeamName() {
         return teamName;
@@ -34,6 +34,10 @@ public class Team {
 
     public int getTeamID() {
         return teamID;
+    }
+
+    public int getTeamGlobalAbillity(){
+	return teamGlobalAbillity;
     }
 
     public List<Player> getPlayerList() {
@@ -62,6 +66,10 @@ public class Team {
 
     public void setTeamID(int teamID) {
         this.teamID = teamID;
+    }
+
+    public void setTeamGlobalAbillity(int teamGlobalAbillity){
+	this.teamGlobalAbillity = teamGlobalAbillity;
     }
 
     public void setPlayerList(List<Player> playerList) {

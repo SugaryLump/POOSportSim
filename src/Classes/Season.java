@@ -3,12 +3,11 @@ package Classes;
 import java.util.List;
 
 public class Season {
-    // ano, campeao do ano, seasonid, lista de equipas, lista de jogos
-    public int year;
-    public int championID;
-    public int seasonID;
-    public List<Team> teamList;
-    public List<Game> gameList;
+    public int year; // Season Year
+    public int championID; // Champion ID -> 00000 until end
+    public int seasonID; // Season ID
+    public List<Team> teamList; // List of Teams
+    public List<Game> gameList; // List of Games
 
     public int getYear() {
         return year;

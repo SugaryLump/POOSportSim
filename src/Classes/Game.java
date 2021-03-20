@@ -2,12 +2,11 @@ package Classes;
 
 
 public class Game {
-    // tempo, score(par), equipas(par), dia, id do jogo
-    public int time;
-    public Pair<Integer,Integer> gameScore;
-    public Pair<Integer,Integer> teamsID;
-    public int day;
-    public int gameID;
+    public int time; // Time Elapsed (0-45/45-90);
+    public Pair<Integer,Integer> gameScore; // Pair with the game score
+    public Pair<Integer,Integer> teamsID; // Pair with teams (ID for easy access)
+    public int day; // Day of game daymonth(00×00×)
+    public int gameID; // Game ID
 
     public int getTime() {
         return time;

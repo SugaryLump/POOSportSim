@@ -1,12 +1,12 @@
 package Classes;
 
 public class Player {
-    // nome idade posiçao array de ints e teamids
-    public String name;
-    public int age;
-    public int position;
-    public int [] history;
-    public int [] abiliity;
+    public String name; //Player name
+    public int age; // Player age
+    public int position; // Player Pos (if 0 then goalkeeper)
+    public int [] history; // Players last teams (for transfers)
+    public int [] abiliity; // Player abillities [speed, stamina, dexterity, agillity, head game, kick, pass abillity]
+    public int globalAbility; // Player abillities average
 
     public int getAge() {
         return age;
@@ -28,6 +28,10 @@ public class Player {
         return position;
     }
 
+    public int getGlobalAbillity(){
+	return globalAbility;
+    }
+
     public void setAbiliity(int[] abiliity) {
         this.abiliity = abiliity;
     }
@@ -46,6 +50,10 @@ public class Player {
 
     public void setPosition(int position) {
         this.position = position;
+    }
+
+    public void setGlobalAbiliity(int globalAbility){
+	this.globalAbility = globalAbility;
     }
 
 }
