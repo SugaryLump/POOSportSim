@@ -2,7 +2,7 @@ package Classes;
 
 import java.util.List;
 
-public class Season {
+public class FootballSeason {
     public int year; // Season Year
     public int championID; // Champion ID -> 00000 until end
     public int seasonID; // Season ID

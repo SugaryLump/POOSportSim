@@ -1,17 +1,28 @@
 package Classes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Team {
-    public String teamName; //Team name
-    public int score; // Points in scoreboard per season
-    public int wins; // Wins per seasona
-    public int losses; //Losses per season
-    public int ties; // Ties per season
-    public int teamID; // Team Id
-    public int teamGlobalAbillity; // Team Global Average Abillity
-    public List<Player> playerList; // Player List
+    private String teamName; //Team name
+    private int score; // Points in scoreboard per season
+    private int wins; // Wins per seasona
+    private int losses; //Losses per season
+    private int ties; // Ties per season
+    private int teamID; // Team Id
+    private int teamGlobalAbillity; // Team Global Average Abillity
+    private List<Player> playerList; // Player List
 
+    public Team (String name) {
+        this.teamName = name;
+        score = 0;
+        wins = 0;
+        losses = 0;
+        ties = 0;
+        teamID = 0; //MIKE, NÃO SEI COMO QUERES FAZER COM OS IDs AQUI
+        teamGlobalAbillity = 0;
+        playerList = new ArrayList<Player>();
+    }
     public String getTeamName() {
         return teamName;
     }
