@@ -1,20 +1,26 @@
 package Classes;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.TreeSet;
 import java.util.Scanner;
+
+enum TeamSortMode {
+    NAME, WINS, LOSSES, TIES;
+}
+
 public class Interpreter {
-    private List<Team> teams;
-    private List<Player> players;
+    private TreeSet<Team> teams;
+    private TreeSet<Player> players;
     //private Simulator currentSimulator;
 
     private boolean unsavedChanges;
     private Scanner input;
+    private TeamSortMode teamSortMode;
 
     public Interpreter() {
-        this.teams = new ArrayList<Team>();
-        this.players = new ArrayList<Player>();
+        this.teams = new TreeSet<>(new ComparatorTeamName());
+        //this.players = new TreeSet<>();
         this.unsavedChanges = false;
+        this.teamSortMode = TeamSortMode.NAME;
         input = new Scanner(System.in);
     }
 
@@ -32,7 +38,7 @@ public class Interpreter {
                     "4- Importar...\n" +
                     "5- Exportar...\n" +
                     "6- Créditos\n" +
-                    "7- Saír\n");
+                    "Q- Saír\n");
 
             switch (input.nextLine().charAt(0)) {
                 case '1':
@@ -40,7 +46,7 @@ public class Interpreter {
                     System.out.println("Funcionalidade ainda não implementada!");
                     break;
                 case '2':
-                    //teamMenu();
+                    teamMenu();
                     break;
                 case '3':
                     //playerMenu();
@@ -58,7 +64,7 @@ public class Interpreter {
                     //printCredits();
                     System.out.println("Funcionalidade ainda não implementada!");
                     break;
-                case '7':
+                case 'Q':
                     if (unsavedChanges)
                         exit = exitConfirm();
                     else
@@ -75,19 +81,26 @@ public class Interpreter {
         boolean exit = false;
         while (!exit) {
             printTeams();
-            System.out.println("(1)Criar   (2)Editar/Visualizar (3)Remover (Q)Regressar");
+            System.out.println("(1)Criar   (2)Editar/Visualizar   (3)Remover   (4)Ordenar   (5)Filtrar   (Q)Regressar");
 
             switch (input.nextLine().charAt(0)) {
                 case '1':
-                    //createTeam();
-                    System.out.println("Funcionalidade ainda não implementada!");
+                    createTeam();
                     break;
                 case '2':
-                    //editTeam();
+                    //editTeam(teamsselectIndex(teams.size()));
                     System.out.println("Funcionalidade ainda não implementada!");
                     break;
                 case '3':
                     //removeTeam();
+                    System.out.println("Funcionalidade ainda não implementada!");
+                    break;
+                case '4':
+                    //changeTeamSorting();
+                    System.out.println("Funcionalidade ainda não implementada!");
+                    break;
+                case '5':
+                    //filterTeam();
                     System.out.println("Funcionalidade ainda não implementada!");
                     break;
                 case 'Q':
@@ -113,10 +126,10 @@ public class Interpreter {
     }
 
     private void printTeams() {
-        int i = 0;
+        int i = 1;
         for (Team team : teams) {
-            System.out.printf("%d- %-20s  %-3d %-3d %-3d%n\n",
-                    i,
+            System.out.printf("%d- %-20s  %-3d %-3d %-3d%n",
+                    i++,
                     team.getTeamName(),
                     team.getWins(),
                     team.getLosses(),
@@ -124,10 +137,37 @@ public class Interpreter {
         }
     }
 
+    private void editTeam(Team team){
+
+    }
     //SAIR
     private boolean exitConfirm () {
         System.out.println("Foram realizadas alterações que ainda não foram guardadas.\n" +
                 "Tem a certeza que quer fechar o programar? (Y/N)");
         return (input.nextLine().toUpperCase().charAt(0) == 'Y');
+    }
+
+    //GERAL
+    private int selectIndex(int maxIndex) {
+        //ASSUME QUE O ÍNDICE COMEÇA EM 1 PARA SER EM TERMOS COMUNS!!
+        System.out.println("Por favor indique o seu índice.");
+        int index;
+        try {
+            index = Integer.parseInt(input.nextLine());
+        }
+        catch (NumberFormatException e) {
+            index = 0;
+        }
+        while (index == 0 || index > maxIndex) {
+            System.out.println("Índice inválido.\nPor favor indique o seu índice.");
+            try {
+                index = Integer.parseInt(input.nextLine());
+            }
+            catch (NumberFormatException e) {
+                index = 0;
+            }
+        }
+
+        return index;
     }
 }
