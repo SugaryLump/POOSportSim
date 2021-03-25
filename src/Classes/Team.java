@@ -23,6 +23,17 @@ public class Team {
         teamGlobalAbillity = 0;
         playerList = new ArrayList<Player>();
     }
+
+    public Team (Team clone) {
+        this.teamName = clone.getTeamName();
+        this.score = clone.getScore();
+        this.wins = clone.getWins();
+        this.losses = clone.getLosses();
+        this.ties = clone.getTies();
+        this.teamID = clone.getTeamID();
+        this.teamGlobalAbillity = clone.getTeamGlobalAbillity();
+        this.playerList = clone.getPlayerList();
+    }
     public String getTeamName() {
         return teamName;
     }
@@ -85,5 +96,18 @@ public class Team {
 
     public void setPlayerList(List<Player> playerList) {
         this.playerList = playerList;
+    }
+
+    public Team clone() {
+        return new Team(this);
+    }
+
+    public void copyTo(Team team) {
+        team.setTeamName(this.teamName);
+        team.setTeamID(this.teamID);
+        team.setTies(this.ties);
+        team.setWins(this.wins);
+        team.setScore(this.score);
+        team.setLosses(this.losses);
     }
 }

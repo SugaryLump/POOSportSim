@@ -5,7 +5,7 @@ public class Player {
     public int age; // Player age
     public int position; // Player Pos (if 0 then goalkeeper)
     public int [] history; // Players last teams (for transfers)
-    public int [] abiliity; // Player abillities [speed, stamina, dexterity, agillity, head game, kick, pass abillity]
+    public int [] ability; // Player abillities [speed, stamina, dexterity, agillity, head game, kick, pass abillity]
     public int globalAbility; // Player abillities average
 
     public int getAge() {
@@ -16,8 +16,8 @@ public class Player {
         return name;
     }
 
-    public int[] getAbiliity() {
-        return abiliity;
+    public int[] getAbility() {
+        return ability;
     }
 
     public int[] getHistory() {
@@ -32,8 +32,8 @@ public class Player {
 	return globalAbility;
     }
 
-    public void setAbiliity(int[] abiliity) {
-        this.abiliity = abiliity;
+    public void setAbility(int[] ability) {
+        this.ability = ability;
     }
 
     public void setAge(int age) {
