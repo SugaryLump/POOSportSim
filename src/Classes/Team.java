@@ -1,7 +1,7 @@
 package Classes;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeSet;
 
 public class Team {
     private String teamName; //Team name
@@ -11,7 +11,7 @@ public class Team {
     private int ties; // Ties per season
     private int teamID; // Team Id
     private int teamGlobalAbillity; // Team Global Average Abillity
-    private List<Player> playerList; // Player List
+    private TreeSet<Player> playerTree; // Player List
 
     public Team (String name) {
         this.teamName = name;
@@ -21,7 +21,7 @@ public class Team {
         ties = 0;
         teamID = 0; //MIKE, NÃO SEI COMO QUERES FAZER COM OS IDs AQUI
         teamGlobalAbillity = 0;
-        playerList = new ArrayList<Player>();
+        playerTree = new TreeSet<>(new ComparatorPlayerName());
     }
 
     public Team (Team clone) {
@@ -32,7 +32,7 @@ public class Team {
         this.ties = clone.getTies();
         this.teamID = clone.getTeamID();
         this.teamGlobalAbillity = clone.getTeamGlobalAbillity();
-        this.playerList = clone.getPlayerList();
+        this.playerTree = clone.getPlayerTree();
     }
     public String getTeamName() {
         return teamName;
@@ -62,8 +62,8 @@ public class Team {
 	return teamGlobalAbillity;
     }
 
-    public List<Player> getPlayerList() {
-        return playerList;
+    public TreeSet<Player> getPlayerTree() {
+        return playerTree;
     }
 
     public void setTeamName(String teamName) {
@@ -94,8 +94,8 @@ public class Team {
 	this.teamGlobalAbillity = teamGlobalAbillity;
     }
 
-    public void setPlayerList(List<Player> playerList) {
-        this.playerList = playerList;
+    public void setPlayerTree(TreeSet<Player> playerTree) {
+        this.playerTree = playerTree;
     }
 
     public Team clone() {

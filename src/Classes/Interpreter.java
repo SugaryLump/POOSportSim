@@ -8,20 +8,26 @@ enum TeamSortMode {
     NAME, WINS, LOSSES, TIES;
 }
 
+enum PlayerSortMode {
+    SPORT, NAME, SCORE;
+}
+
 public class Interpreter {
     private TreeSet<Team> teams;
+    private TeamSortMode teamSortMode;
     private TreeSet<Player> players;
+    private PlayerSortMode playerSortMode;
     //private Simulator currentSimulator;
 
     private boolean unsavedChanges;
     private Scanner input;
-    private TeamSortMode teamSortMode;
 
     public Interpreter() {
         this.teams = new TreeSet<>(new ComparatorTeamName());
+        //this.teamSortMode = TeamSortMode.NAME;
         //this.players = new TreeSet<>();
+        //this.playerSortMode = PlayerSortMode.SPORT;
         this.unsavedChanges = false;
-        this.teamSortMode = TeamSortMode.NAME;
         input = new Scanner(System.in);
     }
 
@@ -92,12 +98,10 @@ public class Interpreter {
                     editTeam(grabTeam(selectIndex(teams.size())));
                     break;
                 case '3':
-                    //removeTeam();
-                    System.out.println("Funcionalidade ainda não implementada!");
+                    this.teams.remove(grabTeam(selectIndex(teams.size())));
                     break;
                 case '4':
-                    //changeTeamSorting();
-                    System.out.println("Funcionalidade ainda não implementada!");
+                    changeTeamsOrder();
                     break;
                 case '5':
                     //filterTeam();
@@ -131,6 +135,7 @@ public class Interpreter {
 
     private void printTeams() {
         int i = 1;
+        System.out.printf("#  Nome                  V   D   E\n");
         for (Team team : teams) {
             System.out.printf("%d- %-20s  %-3d %-3d %-3d%n",
                     i++,
@@ -172,6 +177,7 @@ public class Interpreter {
                     changed = true;
                     break;
                 case '5':
+                    //playerMenu(tmp.getPlayerList());
                     System.out.println("Funcionalidade ainda não implementada!");
                     break;
                 case 'q':
@@ -190,9 +196,28 @@ public class Interpreter {
         }
     }
 
-    //JOGADORES
+    private void changeTeamsOrder() {
+        System.out.println("Que ordem?\n(1)Nome\n(2)Vitórias\n(3)Derrotas\n(4)Empates");
+        TreeSet<Team> newTree;
+        TeamSortMode newSortMode = TeamSortMode.values()[getInt(1,4)-1];
+        if (this.teamSortMode != newSortMode) {
+            this.teamSortMode = newSortMode;
+            newTree = switch (newSortMode) {
+                case NAME -> new TreeSet<Team>(new ComparatorTeamName());
+                case WINS -> new TreeSet<Team>(new ComparatorTeamWinsFirst());
+                case LOSSES -> new TreeSet<Team>(new ComparatorTeamLossesFirst());
+                case TIES -> new TreeSet<Team>(new ComparatorTeamTiesFirst());
+            };
+            for (Team team : this.teams){
+                newTree.add(team);
+                //addAll não usado porque o enunciado pede a risco de comprometer encapsulamento
+            }
+            this.teams = newTree;
+        }
+    }
 
-    /*private void playerMenu(TreeSet<Player> players) {
+    //JOGADORES
+    private void playerMenu(TreeSet<Player> players) {
         boolean exit = false;
         while (!exit) {
             printPlayers(players);
@@ -229,14 +254,13 @@ public class Interpreter {
     private void printPlayers (TreeSet<Player> players) {
         int i = 1;
         for (Player player : players) {
-            System.out.printf("%d- %-20s  %-3d %-3d %-3d%n",
+            System.out.printf("%d- %-15s %-20s  %-3d\n",
                     i++,
+                    "PLAYERSPORTHERE",
                     player.getName(),
-                    player.getGlobalAbillity(),
-                    player.get,
-                    team.getTies());
+                    player.getGlobalAbillity());
         }
-    }*/
+    }
 
     //SAIR
     private boolean exitConfirm () {
