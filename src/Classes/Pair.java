@@ -11,4 +11,7 @@ public class Pair<L,R> {
     public R getR(){ return r; }
     public void setL(L l){ this.l = l; }
     public void setR(R r){ this.r = r; }
+    public String toString () {
+        return ("("+l.toString()+", "+r.toString());
+    }
 }

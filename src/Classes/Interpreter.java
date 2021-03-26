@@ -53,7 +53,7 @@ public class Interpreter {
                     System.out.println("Funcionalidade ainda não implementada!");
                     break;
                 case '2':
-                    teamMenu();
+                    teamMenu(this.teams);
                     break;
                 case '3':
                     //playerMenu();
@@ -84,7 +84,7 @@ public class Interpreter {
     }
 
     //EQUIPAS
-    private void teamMenu() {
+    private void teamMenu(TreeSet<Team> teams) {
         boolean exit = false;
         while (!exit) {
             printTeams();
@@ -104,7 +104,7 @@ public class Interpreter {
                     changeTeamsOrder();
                     break;
                 case '5':
-                    //filterTeam();
+                    //filterTeams();
                     System.out.println("Funcionalidade ainda não implementada!");
                     break;
                 case 'Q':
@@ -135,7 +135,8 @@ public class Interpreter {
 
     private void printTeams() {
         int i = 1;
-        System.out.printf("#  Nome                  V   D   E\n");
+        System.out.println("----------------------------------\n" +
+                "#  Nome                  V   D   E");
         for (Team team : teams) {
             System.out.printf("%d- %-20s  %-3d %-3d %-3d%n",
                     i++,
@@ -144,6 +145,7 @@ public class Interpreter {
                     team.getLosses(),
                     team.getTies());
         }
+        System.out.println("----------------------------------");
     }
 
     private void editTeam(Team team){
@@ -203,10 +205,10 @@ public class Interpreter {
         if (this.teamSortMode != newSortMode) {
             this.teamSortMode = newSortMode;
             newTree = switch (newSortMode) {
-                case NAME -> new TreeSet<Team>(new ComparatorTeamName());
-                case WINS -> new TreeSet<Team>(new ComparatorTeamWinsFirst());
-                case LOSSES -> new TreeSet<Team>(new ComparatorTeamLossesFirst());
-                case TIES -> new TreeSet<Team>(new ComparatorTeamTiesFirst());
+                case NAME -> new TreeSet<>(new ComparatorTeamName());
+                case WINS -> new TreeSet<>(new ComparatorTeamWinsFirst());
+                case LOSSES -> new TreeSet<>(new ComparatorTeamLossesFirst());
+                case TIES -> new TreeSet<>(new ComparatorTeamTiesFirst());
             };
             for (Team team : this.teams){
                 newTree.add(team);
@@ -216,6 +218,62 @@ public class Interpreter {
         }
     }
 
+    /*private void filterTeams (TeamFilter filter) {
+
+        boolean exit = false;
+        while (!exit) {
+            System.out.printf("Opções de filtro:\n" +
+                        "(1)Nome: %s\n" +
+                        "(2)Rácio de vitórias: %s\n" +
+                        "(3)Vitórias: %s\n" +
+                        "(3)Derrotas: %s\n" +
+                        "(4)Empates: %s\n" +
+                        "(5)Jogador: %s\n" +
+                        "(q)Cancelar\n" +
+                        "(Q)Confirmar\n"
+                , filter.getTeamName()
+                , filter.getWinRatio().toString()
+                , filter.getWinBounds().toString()
+                , filter.getLoseBounds().toString()
+                , filter.getTieBounds().toString()
+                , filter.getPlayerName());
+
+            switch (input.nextLine().charAt(0)) {
+                case '1':
+                    tmp.setTeamName(newTeamName());
+                    changed = true;
+                    break;
+                case '2':
+                    tmp.setWins(getInt(0, 999));
+                    changed = true;
+                    break;
+                case '3':
+                    tmp.setLosses(getInt(0,999));
+                    changed = true;
+                    break;
+                case '4':
+                    tmp.setTies(getInt(0,999));
+                    changed = true;
+                    break;
+                case '5':
+                    //playerMenu(tmp.getPlayerList());
+                    System.out.println("Funcionalidade ainda não implementada!");
+                    break;
+                case 'q':
+                    exit = true;
+                    break;
+                case 'Q':
+                    if (changed) {
+                        this.unsavedChanges = true;
+                        tmp.copyTo(team);
+                    }
+                    exit = true;
+                    break;
+                default:
+                    System.out.println("Comando não reconhecido.");
+            }
+        }
+    }*/
     //JOGADORES
     private void playerMenu(TreeSet<Player> players) {
         boolean exit = false;

@@ -34,6 +34,20 @@ public class Team {
         this.teamGlobalAbillity = clone.getTeamGlobalAbillity();
         this.playerTree = clone.getPlayerTree();
     }
+
+    public boolean passesTeamFilter (TeamFilter filter) {
+        double winRatio = (float)this.wins / (this.wins + this.losses + this.ties) * 100;
+        return (this.teamName.contains(filter.getTeamName())
+            && this.wins > filter.getWinBounds().getL()
+            && this.wins < filter.getLoseBounds().getR()
+            && this.losses > filter.getLoseBounds().getL()
+            && this.losses < filter.getLoseBounds().getR()
+            && this.ties > filter.getTieBounds().getL()
+            && this.ties < filter.getTieBounds().getR()
+            && winRatio > filter.getWinRatio().getL()
+            && winRatio < filter.getWinRatio().getR()
+            && this.playerTree.stream().anyMatch(p -> p.getName().contains(filter.getPlayerName())));
+    }
     public String getTeamName() {
         return teamName;
     }
