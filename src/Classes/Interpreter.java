@@ -1,15 +1,18 @@
 package Classes;
 
+import com.sun.source.tree.Tree;
+
 import java.util.Iterator;
 import java.util.TreeSet;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 enum TeamSortMode {
-    NAME, WINS, LOSSES, TIES;
+    NAME, WINS, LOSSES, TIES
 }
 
 enum PlayerSortMode {
-    SPORT, NAME, SCORE;
+    SPORT, NAME, SCORE
 }
 
 public class Interpreter {
@@ -20,7 +23,7 @@ public class Interpreter {
     //private Simulator currentSimulator;
 
     private boolean unsavedChanges;
-    private Scanner input;
+    private final Scanner input;
 
     public Interpreter() {
         this.teams = new TreeSet<>(new ComparatorTeamName());
@@ -29,6 +32,16 @@ public class Interpreter {
         //this.playerSortMode = PlayerSortMode.SPORT;
         this.unsavedChanges = false;
         input = new Scanner(System.in);
+
+        //TEMPORARY TEST TEAMS
+        Team t1 = new Team("A", 0, 10, 20, 30, 0, 0);
+        Team t2 = new Team("B", 0, 30, 20, 10, 0, 0);
+        Team t3 = new Team("C", 0, 50, 10, 10, 0, 0);
+        Team t4 = new Team("D", 0, 5, 70, 5, 0, 0);
+        this.teams.add(t1);
+        this.teams.add(t2);
+        this.teams.add(t3);
+        this.teams.add(t4);
     }
 
     public void welcomeMessage(){
@@ -85,9 +98,11 @@ public class Interpreter {
 
     //EQUIPAS
     private void teamMenu(TreeSet<Team> teams) {
+        TreeSet<Team> workingTeams = teams;
+        TeamFilter filter = new TeamFilter();
         boolean exit = false;
         while (!exit) {
-            printTeams();
+            printTeams(workingTeams);
             System.out.println("(1)Criar   (2)Editar/Visualizar   (3)Remover   (4)Ordenar   (5)Filtrar   (Q)Regressar");
 
             switch (input.nextLine().charAt(0)) {
@@ -95,17 +110,18 @@ public class Interpreter {
                     createTeam();
                     break;
                 case '2':
-                    editTeam(grabTeam(selectIndex(teams.size())));
+                    editTeam(grabTeam(workingTeams, askForInt("Selecione o índice da equipa.", 1, workingTeams.size())));
                     break;
                 case '3':
-                    this.teams.remove(grabTeam(selectIndex(teams.size())));
+                    Team removeTeam = grabTeam(workingTeams, askForInt("Selecione o índice da equipa.", 1, workingTeams.size()));
+                    this.teams.remove(removeTeam);
+                    workingTeams.remove(removeTeam);
                     break;
                 case '4':
-                    changeTeamsOrder();
+                    workingTeams = changeTeamsOrder(workingTeams);
                     break;
                 case '5':
-                    //filterTeams();
-                    System.out.println("Funcionalidade ainda não implementada!");
+                    workingTeams = filterTeams(workingTeams, filter);
                     break;
                 case 'Q':
                     exit = true;
@@ -117,23 +133,12 @@ public class Interpreter {
     }
 
     private void createTeam() {
-        Team newTeam = new Team(newTeamName());
+        Team newTeam = new Team(askForString("Qual o nome da nova equipa?", 1, 20));
         this.teams.add(newTeam);
         unsavedChanges = true;
     }
 
-    private String newTeamName() {
-        System.out.println("Nome da equipa?");
-        String name = input.nextLine();
-
-        while (name.length() > 20) {
-            System.out.println("Nome demasiado grande (MÁX 20 CHAR.)\nNome da equipa?");
-            name = input.nextLine();
-        }
-        return name;
-    }
-
-    private void printTeams() {
+    private void printTeams(TreeSet<Team> teams) {
         int i = 1;
         System.out.println("----------------------------------\n" +
                 "#  Nome                  V   D   E");
@@ -163,19 +168,19 @@ public class Interpreter {
                     "\n\n(q)Cancelar\n(Q)Guardar e saír");
             switch (input.nextLine().charAt(0)) {
                 case '1':
-                    tmp.setTeamName(newTeamName());
+                    tmp.setTeamName(askForString("Qual o novo nome da equipa?", 1, 20));
                     changed = true;
                     break;
                 case '2':
-                    tmp.setWins(getInt(0, 999));
+                    tmp.setWins(askForInt("Indique o número de vitórias.",0, 999));
                     changed = true;
                     break;
                 case '3':
-                    tmp.setLosses(getInt(0,999));
+                    tmp.setLosses(askForInt("Indique o número de derrotas.",0,999));
                     changed = true;
                     break;
                 case '4':
-                    tmp.setTies(getInt(0,999));
+                    tmp.setTies(askForInt("Indique o número de empates.",0,999));
                     changed = true;
                     break;
                 case '5':
@@ -198,74 +203,105 @@ public class Interpreter {
         }
     }
 
-    private void changeTeamsOrder() {
+    private TreeSet<Team> changeTeamsOrder(TreeSet<Team> workingTeams) {
         System.out.println("Que ordem?\n(1)Nome\n(2)Vitórias\n(3)Derrotas\n(4)Empates");
-        TreeSet<Team> newTree;
-        TeamSortMode newSortMode = TeamSortMode.values()[getInt(1,4)-1];
+        TreeSet<Team> newMainTeams;
+        TreeSet<Team> newWorkingTeams = workingTeams;
+        TeamSortMode newSortMode = TeamSortMode.values()[askForInt("Selecione o índice da ordenação.", 1, 4)-1];
         if (this.teamSortMode != newSortMode) {
             this.teamSortMode = newSortMode;
-            newTree = switch (newSortMode) {
+            newMainTeams = switch (newSortMode) {
                 case NAME -> new TreeSet<>(new ComparatorTeamName());
                 case WINS -> new TreeSet<>(new ComparatorTeamWinsFirst());
                 case LOSSES -> new TreeSet<>(new ComparatorTeamLossesFirst());
                 case TIES -> new TreeSet<>(new ComparatorTeamTiesFirst());
             };
+            newWorkingTeams = new TreeSet<>(newMainTeams.comparator());
             for (Team team : this.teams){
-                newTree.add(team);
+                newMainTeams.add(team);
                 //addAll não usado porque o enunciado pede a risco de comprometer encapsulamento
             }
-            this.teams = newTree;
+            for (Team team : workingTeams){
+                newWorkingTeams.add(team);
+                //addAll não usado porque o enunciado pede a risco de comprometer encapsulamento
+            }
+            this.teams = newMainTeams;
         }
+        return newWorkingTeams;
     }
 
-    /*private void filterTeams (TeamFilter filter) {
-
+    private TreeSet<Team> filterTeams (TreeSet<Team> filteredTeams, TeamFilter filter) {
+        TeamFilter newFilter = filter.clone();
         boolean exit = false;
+        boolean changed = false;
         while (!exit) {
             System.out.printf("Opções de filtro:\n" +
                         "(1)Nome: %s\n" +
                         "(2)Rácio de vitórias: %s\n" +
                         "(3)Vitórias: %s\n" +
-                        "(3)Derrotas: %s\n" +
-                        "(4)Empates: %s\n" +
-                        "(5)Jogador: %s\n" +
+                        "(4)Derrotas: %s\n" +
+                        "(5)Empates: %s\n" +
+                        "(6)Jogador: %s\n" +
+                        "(R)Remover filtro\n" +
                         "(q)Cancelar\n" +
                         "(Q)Confirmar\n"
-                , filter.getTeamName()
-                , filter.getWinRatio().toString()
-                , filter.getWinBounds().toString()
-                , filter.getLoseBounds().toString()
-                , filter.getTieBounds().toString()
-                , filter.getPlayerName());
+                , newFilter.getTeamName()
+                , newFilter.getWinRatio().toString()
+                , newFilter.getWinBounds().toString()
+                , newFilter.getLoseBounds().toString()
+                , newFilter.getTieBounds().toString()
+                , newFilter.getPlayerName());
 
             switch (input.nextLine().charAt(0)) {
                 case '1':
-                    tmp.setTeamName(newTeamName());
+                    newFilter.setTeamName(askForString("Nome da equipa a pesquisar?", 0, 20));
                     changed = true;
                     break;
                 case '2':
-                    tmp.setWins(getInt(0, 999));
+                    newFilter.setWinRatio(new Pair<>(
+                            askForInt("Rácio de vitórias mínimo (0%-100%)?", 0, 100)
+                            , askForInt("Rácio de vitórias máximo (0%-100%)?", 0, 100)));
                     changed = true;
                     break;
                 case '3':
-                    tmp.setLosses(getInt(0,999));
+                    newFilter.setWinBounds(new Pair<>(
+                            askForInt("Número mínimo de vitórias (0-999)?", 0, 999)
+                            , askForInt("Número máximo de vitórias (0-999)?", 0, 999)));
                     changed = true;
                     break;
                 case '4':
-                    tmp.setTies(getInt(0,999));
+                    newFilter.setLoseBounds(new Pair<>(
+                            askForInt("Número mínimo de derrotas (0-999)?", 0, 999)
+                            , askForInt("Número mínimo de derrotas (0-999)?", 0, 999)));
                     changed = true;
                     break;
                 case '5':
-                    //playerMenu(tmp.getPlayerList());
-                    System.out.println("Funcionalidade ainda não implementada!");
+                    newFilter.setTieBounds(new Pair<>(
+                            askForInt("Número mínimo de empates (0-999)?", 0, 999)
+                            , askForInt("Número mácimo de empates (0-999)?", 0, 999)));
+                    changed = true;
                     break;
+                case '6':
+                    newFilter.setPlayerName(askForString("Nome do jogador a pesquisar?", 0, 20));
+                    changed = true;
+                case 'R':
+                    filter.reset();
+                    filteredTeams = this.teams;
+                    exit = true;
                 case 'q':
                     exit = true;
                     break;
                 case 'Q':
                     if (changed) {
-                        this.unsavedChanges = true;
-                        tmp.copyTo(team);
+                        newFilter.copyTo(filter);
+                        filteredTeams = this.teams.stream()
+                            .filter(t-> t.passesTeamFilter(newFilter))
+                            .collect(Collectors.toCollection(
+                                    () -> new TreeSet<>(this.teams.comparator())));
+                        /*for (Team team : this.teams){
+                            if (team.passesTeamFilter(filter))
+                                filteredTeams.add(team);
+                        }*/
                     }
                     exit = true;
                     break;
@@ -273,9 +309,11 @@ public class Interpreter {
                     System.out.println("Comando não reconhecido.");
             }
         }
-    }*/
+        return filteredTeams;
+    }
+
     //JOGADORES
-    private void playerMenu(TreeSet<Player> players) {
+    /*private void playerMenu(TreeSet<Player> players) {
         boolean exit = false;
         while (!exit) {
             printPlayers(players);
@@ -283,10 +321,10 @@ public class Interpreter {
 
             switch (input.nextLine().charAt(0)) {
                 case '1':
-                    createTeam();
+                    //createTeam();
                     break;
                 case '2':
-                    editTeam(grabTeam(selectIndex(teams.size())));
+                    //editTeam(grabTeam(selectIndex(teams.size())));
                     break;
                 case '3':
                     //removeTeam();
@@ -308,6 +346,7 @@ public class Interpreter {
             }
         }
     }
+    */
 
     private void printPlayers (TreeSet<Player> players) {
         int i = 1;
@@ -328,7 +367,7 @@ public class Interpreter {
     }
 
     //GERAL
-    private int selectIndex(int maxIndex) {
+    /*private int selectIndex(int maxIndex) {
         //ASSUME QUE O ÍNDICE COMEÇA EM 1 PARA SER EM TERMOS COMUNS!!
         System.out.println("Por favor indique o seu índice.");
         int index;
@@ -349,10 +388,10 @@ public class Interpreter {
         }
 
         return index;
-    }
+    }*/
 
-    private int getInt(int min, int max){
-        System.out.println("Por favor indique o número.");
+    private int askForInt(String query, int min, int max){
+        System.out.println(query);
         int r;
         boolean except = false;
         try {
@@ -363,7 +402,7 @@ public class Interpreter {
             except = true;
         }
         while (except || r > max || r < min) {
-            System.out.println("Número inválido.\nPor favor indique o número.");
+            System.out.printf("Número inválido.\n%s\n", query);
             except = false;
             try {
                 r = Integer.parseInt(input.nextLine());
@@ -377,9 +416,20 @@ public class Interpreter {
         return r;
     }
 
-    private Team grabTeam(int index) {
+    private String askForString(String query, int min, int max) {
+        System.out.println(query);
+        String name = input.nextLine();
+
+        while (name.length() > max || name.length() < min) {
+            System.out.printf("O comprimento tem de ser entre %d e %d caractéres.\n%s\n", min, max, query);
+            name = input.nextLine();
+        }
+        return name;
+    }
+
+    private Team grabTeam(TreeSet<Team> teams, int index) {
         //INDEX STARTING AT 1!!
-        Iterator<Team> it = this.teams.iterator();
+        Iterator<Team> it = teams.iterator();
         Team r = null;
         while (it.hasNext() && index > 0){
             r = it.next();

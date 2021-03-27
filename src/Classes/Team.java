@@ -35,8 +35,20 @@ public class Team {
         this.playerTree = clone.getPlayerTree();
     }
 
+    public Team (String name, int score, int wins, int losses, int ties, int teamID, int teamGlobalAbillity) {
+        this.teamName = name;
+        this.score = score;
+        this.wins = wins;
+        this.losses = losses;
+        this.ties = ties;
+        this.teamID = teamID; //MIKE, NÃO SEI COMO QUERES FAZER COM OS IDs AQUI
+        this.teamGlobalAbillity = teamGlobalAbillity;
+        playerTree = new TreeSet<>(new ComparatorPlayerName());
+    }
+
     public boolean passesTeamFilter (TeamFilter filter) {
         double winRatio = (float)this.wins / (this.wins + this.losses + this.ties) * 100;
+        boolean playerSearch = filter.getPlayerName().length() > 0;
         return (this.teamName.contains(filter.getTeamName())
             && this.wins > filter.getWinBounds().getL()
             && this.wins < filter.getLoseBounds().getR()
@@ -46,7 +58,7 @@ public class Team {
             && this.ties < filter.getTieBounds().getR()
             && winRatio > filter.getWinRatio().getL()
             && winRatio < filter.getWinRatio().getR()
-            && this.playerTree.stream().anyMatch(p -> p.getName().contains(filter.getPlayerName())));
+            && (!playerSearch || this.playerTree.stream().anyMatch(p -> p.getName().contains(filter.getPlayerName()))));
     }
     public String getTeamName() {
         return teamName;
