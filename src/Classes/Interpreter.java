@@ -1,7 +1,5 @@
 package Classes;
 
-import com.sun.source.tree.Tree;
-
 import java.util.Iterator;
 import java.util.TreeSet;
 import java.util.Scanner;
@@ -102,7 +100,7 @@ public class Interpreter {
         TeamFilter filter = new TeamFilter();
         boolean exit = false;
         while (!exit) {
-            printTeams(workingTeams);
+            printTeamsTable(workingTeams);
             System.out.println("(1)Criar   (2)Editar/Visualizar   (3)Remover   (4)Ordenar   (5)Filtrar   (Q)Regressar");
 
             switch (input.nextLine().charAt(0)) {
@@ -138,14 +136,15 @@ public class Interpreter {
         unsavedChanges = true;
     }
 
-    private void printTeams(TreeSet<Team> teams) {
+    private void printTeamsTable(TreeSet<Team> teams) {
         int i = 1;
         System.out.println("----------------------------------\n" +
-                "#  Nome                  V   D   E");
+                "#  Nome                  G     V   D   E");
         for (Team team : teams) {
-            System.out.printf("%d- %-20s  %-3d %-3d %-3d%n",
+            System.out.printf("%d- %-20s  %-5d %-3d %-3d %-3d%n",
                     i++,
                     team.getTeamName(),
+                    team.getTeamGlobalAbillity(),
                     team.getWins(),
                     team.getLosses(),
                     team.getTies());
@@ -237,15 +236,17 @@ public class Interpreter {
         while (!exit) {
             System.out.printf("Opções de filtro:\n" +
                         "(1)Nome: %s\n" +
-                        "(2)Rácio de vitórias: %s\n" +
-                        "(3)Vitórias: %s\n" +
-                        "(4)Derrotas: %s\n" +
-                        "(5)Empates: %s\n" +
-                        "(6)Jogador: %s\n" +
+                        "(2)Habilidade Global: %s\n" +
+                        "(3)Rácio de vitórias: %s\n" +
+                        "(4)Vitórias: %s\n" +
+                        "(5)Derrotas: %s\n" +
+                        "(6)Empates: %s\n" +
+                        "(7)Jogador: %s\n" +
                         "(R)Remover filtro\n" +
                         "(q)Cancelar\n" +
                         "(Q)Confirmar\n"
                 , newFilter.getTeamName()
+                , newFilter.getScoreBounds().toString()
                 , newFilter.getWinRatio().toString()
                 , newFilter.getWinBounds().toString()
                 , newFilter.getLoseBounds().toString()
@@ -258,30 +259,33 @@ public class Interpreter {
                     changed = true;
                     break;
                 case '2':
+                    newFilter.setScoreBounds(new Pair<>(askForInt("Habilidade global mínima?", 0, 99)
+                                                        , askForInt("Habilidade global máxima?", 0, 99)));
+                case '3':
                     newFilter.setWinRatio(new Pair<>(
                             askForInt("Rácio de vitórias mínimo (0%-100%)?", 0, 100)
                             , askForInt("Rácio de vitórias máximo (0%-100%)?", 0, 100)));
                     changed = true;
                     break;
-                case '3':
+                case '4':
                     newFilter.setWinBounds(new Pair<>(
                             askForInt("Número mínimo de vitórias (0-999)?", 0, 999)
                             , askForInt("Número máximo de vitórias (0-999)?", 0, 999)));
                     changed = true;
                     break;
-                case '4':
+                case '5':
                     newFilter.setLoseBounds(new Pair<>(
                             askForInt("Número mínimo de derrotas (0-999)?", 0, 999)
                             , askForInt("Número mínimo de derrotas (0-999)?", 0, 999)));
                     changed = true;
                     break;
-                case '5':
+                case '6':
                     newFilter.setTieBounds(new Pair<>(
                             askForInt("Número mínimo de empates (0-999)?", 0, 999)
                             , askForInt("Número mácimo de empates (0-999)?", 0, 999)));
                     changed = true;
                     break;
-                case '6':
+                case '7':
                     newFilter.setPlayerName(askForString("Nome do jogador a pesquisar?", 0, 20));
                     changed = true;
                 case 'R':
