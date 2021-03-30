@@ -1,12 +1,38 @@
 package Classes;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
+
 public class Player {
     public String name; //Player name
     public int age; // Player age
-    public int position; // Player Pos (if 0 then goalkeeper)
     public int [] history; // Players last teams (for transfers)
-    public int [] ability; // Player abillities [speed, stamina, dexterity, agillity, head game, kick, pass abillity]
-    public int globalAbility; // Player abillities average
+    public int [] ability; // Player abilities [speed, stamina, dexterity, agility, head game, kick, pass abillity]
+    public int globalAbility; // Player abilities average
+
+    public Player(String name, int age, int[] history, int[] ability, int globalAbility) {
+        this.name = name;
+        this.age = age;
+        this.history = history;
+        this.ability = ability;
+        this.globalAbility = globalAbility;
+    }
+
+    public Player() {
+        this.name = "";
+        this.age = 0;
+        this.history = new int[0];
+        this.ability = new int[0];
+        this.globalAbility = 0;
+    }
+
+    public Player(Player p) {
+        this.name = p.getName();
+        this.age = p.getAge();
+        this.history = p.getHistory();
+        this.ability = p.getAbility();
+        this.globalAbility = p.getGlobalAbillity();
+    }
 
     public int getAge() {
         return age;
@@ -22,10 +48,6 @@ public class Player {
 
     public int[] getHistory() {
         return history;
-    }
-
-    public int getPosition() {
-        return position;
     }
 
     public int getGlobalAbillity(){
@@ -48,14 +70,29 @@ public class Player {
         this.name = name;
     }
 
-    public void setPosition(int position) {
-        this.position = position;
-    }
-
     public void setGlobalAbiliity(int globalAbility){
 	this.globalAbility = globalAbility;
     }
 
+    public void addTeam(int id){
+        int n = this.history.length+1;
+        int [] array = getHistory();
+        int [] newHistory = Arrays.copyOf(array,n);
+        newHistory[0] = id;
+        if (n >= 0) System.arraycopy(array, 0, newHistory, 1, array.length);
+        this.setHistory(newHistory);
+    }
+
+    @Override
+    public String toString() {
+        return "Player{" +
+                "name='" + name + '\'' +
+                ", age=" + age +
+                ", history=" + Arrays.toString(history) +
+                ", ability=" + Arrays.toString(ability) +
+                ", globalAbility=" + globalAbility +
+                '}';
+    }
 }
 
 

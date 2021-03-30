@@ -1,16 +1,17 @@
 package Classes;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
 
 public class Team {
     private String teamName; //Team name
     private int score; // Points in scoreboard per season
-    private int wins; // Wins per seasona
+    private int wins; // Wins per season
     private int losses; //Losses per season
     private int ties; // Ties per season
     private int teamID; // Team Id
-    private int teamGlobalAbillity; // Team Global Average Abillity
+    private int teamGlobalAbillity; // Team Global Average Ability
     private TreeSet<Player> playerTree; // Player List
 
     public Team (String name) {
@@ -135,5 +136,13 @@ public class Team {
         team.setWins(this.wins);
         team.setScore(this.score);
         team.setLosses(this.losses);
+    }
+
+    public void movePlayer(int index, Team team){
+        // to be discussed
+    }
+
+    public void movePlayer(String playerName, Team team){
+        playerTree.removeIf(player -> player.getName().equals(playerName));
     }
 }
