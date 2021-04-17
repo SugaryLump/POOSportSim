@@ -18,6 +18,7 @@ public class TeamFilter {
                 = new Pair<>(0, 999);
         this.winRatio = new Pair<>(0,100);
         this.teamName = this.playerName = "";
+        this.scoreBounds = new Pair<>(0, 999);
     }
 
     public TeamFilter(TeamFilter cloneFilter) {

@@ -7,7 +7,7 @@ public class Player {
     public String name; //Player name
     public int age; // Player age
     public int [] history; // Players last teams (for transfers)
-    public int [] ability; // Player abilities [speed, stamina, dexterity, agility, head game, kick, pass abillity]
+    public int [] ability; // Player abilities
     public int globalAbility; // Player abilities average
 
     public Player(String name, int age, int[] history, int[] ability, int globalAbility) {

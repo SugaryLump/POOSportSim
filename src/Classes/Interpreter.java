@@ -234,17 +234,19 @@ public class Interpreter {
         boolean exit = false;
         boolean changed = false;
         while (!exit) {
-            System.out.printf("Opções de filtro:\n" +
-                        "(1)Nome: %s\n" +
-                        "(2)Habilidade Global: %s\n" +
-                        "(3)Rácio de vitórias: %s\n" +
-                        "(4)Vitórias: %s\n" +
-                        "(5)Derrotas: %s\n" +
-                        "(6)Empates: %s\n" +
-                        "(7)Jogador: %s\n" +
-                        "(R)Remover filtro\n" +
-                        "(q)Cancelar\n" +
-                        "(Q)Confirmar\n"
+            System.out.printf("""
+                            Opções de filtro:
+                            (1)Nome: %s
+                            (2)Habilidade Global: %s
+                            (3)Rácio de vitórias: %s
+                            (4)Vitórias: %s
+                            (5)Derrotas: %s
+                            (6)Empates: %s
+                            (7)Jogador: %s
+                            (R)Remover filtro
+                            (q)Cancelar
+                            (Q)Confirmar
+                            """
                 , newFilter.getTeamName()
                 , newFilter.getScoreBounds().toString()
                 , newFilter.getWinRatio().toString()
