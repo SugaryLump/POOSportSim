@@ -36,7 +36,7 @@ public class Team {
         this.playerTree = clone.getPlayerTree();
     }
 
-    public Team (String name, int score, int wins, int losses, int ties, int teamID, int teamGlobalAbillity) {
+    public Team (String name, int score, int wins, int losses, int ties, int teamID, int teamGlobalAbillity, TreeSet<Player> players) {
         this.teamName = name;
         this.score = score;
         this.wins = wins;
@@ -44,7 +44,7 @@ public class Team {
         this.ties = ties;
         this.teamID = teamID; //MIKE, NÃO SEI COMO QUERES FAZER COM OS IDs AQUI
         this.teamGlobalAbillity = teamGlobalAbillity;
-        playerTree = new TreeSet<>(new ComparatorPlayerName());
+        this.playerTree = players;
     }
 
     public boolean passesTeamFilter (TeamFilter filter) {

@@ -30,16 +30,6 @@ public class Interpreter {
         //this.playerSortMode = PlayerSortMode.SPORT;
         this.unsavedChanges = false;
         input = new Scanner(System.in);
-
-        //TEMPORARY TEST TEAMS
-        Team t1 = new Team("A", 0, 10, 20, 30, 0, 0);
-        Team t2 = new Team("B", 0, 30, 20, 10, 0, 0);
-        Team t3 = new Team("C", 0, 50, 10, 10, 0, 0);
-        Team t4 = new Team("D", 0, 5, 70, 5, 0, 0);
-        this.teams.add(t1);
-        this.teams.add(t2);
-        this.teams.add(t3);
-        this.teams.add(t4);
     }
 
     public void welcomeMessage(){
