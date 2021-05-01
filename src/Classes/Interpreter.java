@@ -39,14 +39,17 @@ public class Interpreter {
     public void mainMenu(/*List<Team> teams, List<Player> players, Simulator sim*/) {
         boolean exit = false;
         while (!exit) {
-            System.out.println("Selecione uma das opções abaixo com o seu índice.\n\n" +
-                    "1- Executar simulação\n" +
-                    "2- Equipas\n" +
-                    "3- Jogadores\n" +
-                    "4- Importar...\n" +
-                    "5- Exportar...\n" +
-                    "6- Créditos\n" +
-                    "Q- Saír\n");
+            System.out.println("""
+                    Selecione uma das opções abaixo com o seu índice.
+
+                    1- Executar simulação
+                    2- Equipas
+                    3- Jogadores
+                    4- Importar...
+                    5- Exportar...
+                    6- Créditos
+                    Q- Saír
+                    """);
 
             switch (input.nextLine().charAt(0)) {
                 case '1':
