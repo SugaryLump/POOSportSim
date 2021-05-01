@@ -311,41 +311,46 @@ public class Interpreter {
         return filteredTeams;
     }
 
-    //JOGADORES
-    /*private void playerMenu(TreeSet<Player> players) {
-        boolean exit = false;
-        while (!exit) {
-            printPlayers(players);
-            System.out.println("(1)Criar   (2)Editar/Visualizar   (3)Remover   (4)Ordenar   (5)Filtrar   (Q)Regressar");
+    private void teamPlayersMenu (TreeSet<Player> players) {}
 
-            switch (input.nextLine().charAt(0)) {
-                case '1':
-                    //createTeam();
-                    break;
-                case '2':
-                    //editTeam(grabTeam(selectIndex(teams.size())));
-                    break;
-                case '3':
-                    //removeTeam();
-                    System.out.println("Funcionalidade ainda não implementada!");
-                    break;
-                case '4':
-                    //changeTeamSorting();
-                    System.out.println("Funcionalidade ainda não implementada!");
-                    break;
-                case '5':
-                    //filterTeam();
-                    System.out.println("Funcionalidade ainda não implementada!");
-                    break;
-                case 'Q':
-                    exit = true;
-                    break;
-                default:
-                    System.out.println("Comando não reconhecido.");
-            }
-        }
+    //JOGADORES
+    private void playerMenu() {
+//        boolean exit = false;
+//        while (!exit) {
+//            printPlayers(players);
+//            System.out.println("(1)Criar   (2)Editar/Visualizar   (3)Remover   (4)Ordenar   (5)Filtrar   (Q)Regressar");
+//
+//            switch (input.nextLine().charAt(0)) {
+//                case '1':
+//                    //createTeam();
+//                    break;
+//                case '2':
+//                    //editTeam(grabTeam(selectIndex(teams.size())));
+//                    break;
+//                case '3':
+//                    //removeTeam();
+//                    System.out.println("Funcionalidade ainda não implementada!");
+//                    break;
+//                case '4':
+//                    //changeTeamSorting();
+//                    System.out.println("Funcionalidade ainda não implementada!");
+//                    break;
+//                case '5':
+//                    //filterTeam();
+//                    System.out.println("Funcionalidade ainda não implementada!");
+//                    break;
+//                case 'Q':
+//                    exit = true;
+//                    break;
+//                default:
+//                    System.out.println("Comando não reconhecido.");
+//            }
+//        }
     }
-    */
+
+    private void createPlayer () {}
+
+    private void editPlayer() {}
 
     private void printPlayers (TreeSet<Player> players) {
         int i = 1;

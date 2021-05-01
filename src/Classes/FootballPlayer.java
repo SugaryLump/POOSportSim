@@ -1,5 +1,6 @@
-import Classes.Player;
+package Classes;
 
+import Classes.Player;
 import java.util.Arrays;
 
 public class FootballPlayer extends Player {

@@ -3,12 +3,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.TreeSet;
 
 public class CSVReader {
 
     //Team: name;score;wins;losses;ties;teamID;teamGlobalAbility;[playerNames]
-    public static ArrayList<Team> importTeamsFromFile(String filename, TreeSet<Player> players) throws FileNotFoundException {
+    public static ArrayList<Team> importTeamsFromFile(String filename, Set<Player> players) throws FileNotFoundException {
         ArrayList<Team> teams = new ArrayList<Team>();
         Scanner file = new Scanner(new File(filename));
         while (file.hasNextLine()) {
@@ -37,4 +38,10 @@ public class CSVReader {
 
         return teams;
     }
+
+    public static ArrayList<Player> importPlayersFromFile(String filename) throws FileNotFoundException{return null;}
+
+    public static void exportTeamToFile(Set<Team> teams, String filename) {}
+
+    public static void exportPlayerToFile(Set<Player> players, String filename) {}
 }
