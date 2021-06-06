@@ -1,4 +1,4 @@
-package Classes;
+package Players;
 
 public class Goalkeeper extends FootballPlayer {
     public int elasticity; //Custom abillity for goalkeepers

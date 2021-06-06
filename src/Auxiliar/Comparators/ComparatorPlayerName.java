@@ -1,5 +1,8 @@
-package Classes;
+package Auxiliar.Comparators;
+
 import java.util.Comparator;
+
+import Players.*;
 
 public class ComparatorPlayerName implements Comparator<Player>{
     public int compare (Player p1, Player p2) {

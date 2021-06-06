@@ -1,4 +1,7 @@
-package Classes;
+package Team;
+
+import Players.*;
+import Auxiliar.Comparators.*;
 
 import java.util.Iterator;
 import java.util.List;

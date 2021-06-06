@@ -1,4 +1,9 @@
-package Classes;
+package Interpreter;
+
+import Team.*;
+import Players.*;
+import Auxiliar.*;
+import Auxiliar.Comparators.*;
 
 import java.util.Iterator;
 import java.util.TreeSet;

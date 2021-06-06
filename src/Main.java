@@ -1,4 +1,4 @@
-import Classes.*;
+import Interpreter.Interpreter;
 
 public class Main {
 

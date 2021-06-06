@@ -1,4 +1,9 @@
-package Classes;
+package Auxiliar;
+
+import Players.*;
+import Team.*;
+import Auxiliar.Comparators.*;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;

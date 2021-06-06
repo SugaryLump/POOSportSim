@@ -1,4 +1,4 @@
-package Classes;
+package Players;
 
 public class Defense extends FootballPlayer{
     public int strength;

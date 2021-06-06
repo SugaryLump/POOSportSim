@@ -1,4 +1,4 @@
-package Classes;
+package Players;
 
 public class Midfield extends FootballPlayer {
     public int ballRecuperation;

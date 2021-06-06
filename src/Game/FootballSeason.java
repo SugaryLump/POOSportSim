@@ -1,4 +1,6 @@
-package Classes;
+package Game;
+
+import Team.*;
 
 import java.util.List;
 

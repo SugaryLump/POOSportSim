@@ -1,4 +1,4 @@
-package Classes;
+package Players;
 
 public abstract class FootballPlayer extends Player{
     public int velocity;

@@ -1,4 +1,4 @@
-package Classes;
+package Players;
 
 public class Striker extends FootballPlayer{
     public int receptionSkill;

@@ -1,5 +1,8 @@
-package Classes;
+package Auxiliar.Comparators;
+
 import java.util.Comparator;
+
+import Team.*;
 
 public class ComparatorTeamWinsFirst implements Comparator<Team>{
     public int compare (Team t1, Team t2) {

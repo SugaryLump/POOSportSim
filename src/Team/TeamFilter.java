@@ -1,4 +1,7 @@
-package Classes;
+package Team;
+
+import Auxiliar.*;
+
 
 import java.util.TreeSet;
 

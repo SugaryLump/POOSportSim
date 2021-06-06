@@ -1,4 +1,6 @@
-package Classes;
+package Game;
+
+import Auxiliar.*;
 
 
 public class Game {
