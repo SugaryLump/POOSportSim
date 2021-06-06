@@ -29,7 +29,8 @@ public class Midfield extends FootballPlayer {
 
     @Override
     public int overallAbility() {
-        int a = this.velocity + this.resistance + this.dexterity + this.impulse + this.headGame + this.shootingSkill + this.shootingSkill + this.ballRecuperation;
+        int a = this.velocity + this.resistance + this.dexterity + this.impulse
+                + this.headGame + this.shootingSkill + this.shootingSkill + this.ballRecuperation;
         int b = a / 8;
         return b;
     }

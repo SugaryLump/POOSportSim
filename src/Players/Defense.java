@@ -28,7 +28,8 @@ public class Defense extends FootballPlayer{
     }
 
     public int overallAbility() {
-        int a = this.velocity + this.resistance + this.dexterity + this.impulse + this.headGame + this.shootingSkill + this.shootingSkill + this.strength;
+        int a = this.velocity + this.resistance + this.dexterity + this.impulse
+                + this.headGame + this.shootingSkill + this.shootingSkill + this.strength;
         int b = a / 8;
         return b;
     }

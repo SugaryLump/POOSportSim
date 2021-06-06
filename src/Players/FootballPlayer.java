@@ -22,7 +22,8 @@ public abstract class FootballPlayer extends Player{
         this.passingSkill = 0;
     }
 
-    public FootballPlayer(String name, int age, int[] history, int vel, int res, int dex, int imp, int hg, int ss, int pass) {
+    public FootballPlayer(String name, int age, int[] history, int vel,
+                          int res, int dex, int imp, int hg, int ss, int pass) {
         this.name = name;
         this.age = age;
         this.history = history;

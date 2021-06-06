@@ -148,4 +148,14 @@ public class Team {
     public void movePlayer(String playerName, Team team){
         playerTree.removeIf(player -> player.getName().equals(playerName));
     }
+
+    public int overallAbilityTeam(){
+        TreeSet<Player> team = this.playerTree;
+        int i = 0;
+        for (Player p : team) {
+            i += p.overallAbility();
+        }
+        int r = i / team.size();
+        return r;
+    }
 }

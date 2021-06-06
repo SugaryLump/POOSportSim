@@ -29,7 +29,8 @@ public class FullBack extends FootballPlayer{
 
     @Override
     public int overallAbility() {
-        int a = this.velocity + this.resistance + this.dexterity + this.impulse + this.headGame + this.shootingSkill + this.shootingSkill + this.crossingSkill;
+        int a = this.velocity + this.resistance + this.dexterity + this.impulse
+                + this.headGame + this.shootingSkill + this.shootingSkill + this.crossingSkill;
         int b = a / 8;
         return b;
     }

@@ -2,7 +2,7 @@ package Players;
 
 import java.util.Arrays;
 
-public class Player {
+public abstract class Player {
     public String name; //Player name
     public int age; // Player age
     public int [] history; // Players last teams (for transfers)
@@ -68,6 +68,8 @@ public class Player {
                 ", history=" + Arrays.toString(history) +
                 '}';
     }
+
+    public abstract int overallAbility();
 }
 
 

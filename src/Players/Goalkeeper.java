@@ -29,7 +29,8 @@ public class Goalkeeper extends FootballPlayer {
 
     @Override
     public int overallAbility() {
-        int a = this.velocity + this.resistance + this.dexterity + this.impulse + this.headGame + this.shootingSkill + this.shootingSkill + this.elasticity;
+        int a = this.velocity + this.resistance + this.dexterity + this.impulse
+                + this.headGame + this.shootingSkill + this.shootingSkill + this.elasticity;
         int b = a / 8;
         return b;
     }
