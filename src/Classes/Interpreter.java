@@ -358,8 +358,7 @@ public class Interpreter {
             System.out.printf("%d- %-15s %-20s  %-3d\n",
                     i++,
                     "PLAYERSPORTHERE",
-                    player.getName(),
-                    player.getGlobalAbillity());
+                    player.getName());
         }
     }
 

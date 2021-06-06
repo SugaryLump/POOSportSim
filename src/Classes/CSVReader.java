@@ -1,6 +1,5 @@
 package Classes;
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Set;
@@ -39,9 +38,20 @@ public class CSVReader {
         return teams;
     }
 
+
     public static ArrayList<Player> importPlayersFromFile(String filename) throws FileNotFoundException{return null;}
 
-    public static void exportTeamToFile(Set<Team> teams, String filename) {}
+    public static void exportTeamToFile(Set<Team> teams, String filename) throws IOException {
+        File obj = new File(filename);
+        ObjectOutputStream objout = new ObjectOutputStream(new FileOutputStream(obj));
+        objout.writeObject(teams);
+        objout.close();
+    }
 
-    public static void exportPlayerToFile(Set<Player> players, String filename) {}
+    public static void exportPlayerToFile(Set<Player> players, String filename) throws IOException {
+        File obj = new File(filename);
+        ObjectOutputStream objout = new ObjectOutputStream(new FileOutputStream(obj));
+        objout.writeObject(players);
+        objout.close();
+    }
 }
