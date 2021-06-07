@@ -51,17 +51,19 @@ public class Team {
     }
 
     public boolean passesTeamFilter (TeamFilter filter) {
-        double winRatio = (float)this.wins / (this.wins + this.losses + this.ties) * 100;
+        double winRatio = 0;
+        if (this.wins > 0)
+            winRatio = (float)this.wins / (this.wins + this.losses + this.ties) * 100;
         boolean playerSearch = filter.getPlayerName().length() > 0;
         return (this.teamName.contains(filter.getTeamName())
-            && this.wins > filter.getWinBounds().getL()
-            && this.wins < filter.getLoseBounds().getR()
-            && this.losses > filter.getLoseBounds().getL()
-            && this.losses < filter.getLoseBounds().getR()
-            && this.ties > filter.getTieBounds().getL()
-            && this.ties < filter.getTieBounds().getR()
-            && winRatio > filter.getWinRatio().getL()
-            && winRatio < filter.getWinRatio().getR()
+            && this.wins >= filter.getWinBounds().getL()
+            && this.wins <= filter.getLoseBounds().getR()
+            && this.losses >= filter.getLoseBounds().getL()
+            && this.losses <= filter.getLoseBounds().getR()
+            && this.ties >= filter.getTieBounds().getL()
+            && this.ties <= filter.getTieBounds().getR()
+            && winRatio >= filter.getWinRatio().getL()
+            && winRatio <= filter.getWinRatio().getR()
             && (!playerSearch || this.playerTree.stream().anyMatch(p -> p.getName().contains(filter.getPlayerName()))));
     }
     public String getTeamName() {

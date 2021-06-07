@@ -1,10 +1,9 @@
-import Interpreter.Interpreter;
+import Interpreter.SportSimControl;
 
 public class Main {
 
     public static void main(String[] args) {
-        Interpreter interpreter = new Interpreter();
-        interpreter.welcomeMessage();
-        interpreter.mainMenu();
+        SportSimControl control = new SportSimControl();
+        control.mainMenu();
     }
 }
