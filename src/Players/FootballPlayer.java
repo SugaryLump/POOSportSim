@@ -82,6 +82,7 @@ public class FootballPlayer extends Player{
         this.velocity = p.getVelocity();
         this.resistance = p.getResistance();
         this.impulse = p.getImpulse();
+        this.dexterity = p.getDexterity();
         this.headGame = p.getHeadGame();
         this.shootingSkill = p.getShootingSkill();
         this.passingSkill = p.getPassingSkill();
@@ -198,8 +199,36 @@ public class FootballPlayer extends Player{
     }
 
     public int overallAbility() {
-        return 0;
-    };
+        switch (this.position) {
+            case ("Defense"):
+                int a = this.velocity + this.resistance + this.dexterity + this.impulse
+                        + this.headGame + this.shootingSkill + this.shootingSkill + this.strength;
+                int b = a / 8;
+                return b;
+            case ("FullBack"):
+                int c = this.velocity + this.resistance + this.dexterity + this.impulse
+                        + this.headGame + this.shootingSkill + this.shootingSkill + this.crossingSkill;
+                int d = c / 8;
+                return d;
+            case ("Goalkeeper"):
+                int e = this.velocity + this.resistance + this.dexterity + this.impulse
+                        + this.headGame + this.shootingSkill + this.shootingSkill + this.elasticity;
+                int f = e / 8;
+                return f;
+            case ("Midfield"):
+                int h = this.velocity + this.resistance + this.dexterity + this.impulse
+                        + this.headGame + this.shootingSkill + this.shootingSkill + this.ballRecuperation;
+                int i = h / 8;
+                return i;
+            case ("Striker"):
+                int j = this.velocity + this.resistance + this.dexterity + this.impulse
+                        + this.headGame + this.shootingSkill + this.shootingSkill + this.receptionSkill;
+                int k = j / 8;
+                return k;
+            default:
+                return 0;
+        }
+    }
 
     public FootballPlayer clone() {
         return new FootballPlayer(this);
