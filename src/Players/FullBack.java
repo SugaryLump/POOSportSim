@@ -1,3 +1,4 @@
+/*OBSOLETE
 package Players;
 
 public class FullBack extends FootballPlayer{
@@ -16,7 +17,7 @@ public class FullBack extends FootballPlayer{
 
     public FullBack(Goalkeeper d){
         super(d);
-        this.crossingSkill = getCrossingSkill();
+        this.crossingSkill = d.getCrossingSkill();
     }
 
     public int getCrossingSkill() {
@@ -34,4 +35,4 @@ public class FullBack extends FootballPlayer{
         int b = a / 8;
         return b;
     }
-}
+}*/

@@ -36,7 +36,9 @@ public class Team {
         this.ties = clone.getTies();
         this.teamID = clone.getTeamID();
         this.teamGlobalAbillity = clone.getTeamGlobalAbillity();
-        this.playerTree = clone.getPlayerTree();
+        this.playerTree = new TreeSet<Player>(clone.getPlayerTree().comparator());
+        for(Player p : clone.getPlayerTree())
+            this.playerTree.add(p);
     }
 
     public Team (String name, int score, int wins, int losses, int ties, int teamID, int teamGlobalAbillity, TreeSet<Player> players) {
@@ -128,6 +130,24 @@ public class Team {
 
     public void setPlayerTree(TreeSet<Player> playerTree) {
         this.playerTree = playerTree;
+    }
+
+    public String sport() {
+        if (this.playerTree.size() == 0)
+            return "";
+        return this.playerTree.first().getSport();
+    }
+
+    public void addPlayer(Player p) {
+        this.playerTree.add(p);
+        if (p.currentTeam().equals("Sem equipa"))
+            p.removeNoTeam();
+        p.addPlayerTeam(this.teamName);
+    }
+
+    public void removePlayer(Player p) {
+        this.playerTree.remove(p);
+        p.addPlayerTeam("Sem equipa");
     }
 
     public Team clone() {

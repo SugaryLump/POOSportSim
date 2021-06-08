@@ -1,4 +1,6 @@
+/*OBSOLETE
 package Players;
+
 
 public class Midfield extends FootballPlayer {
     public int ballRecuperation;
@@ -35,3 +37,4 @@ public class Midfield extends FootballPlayer {
         return b;
     }
 }
+*/

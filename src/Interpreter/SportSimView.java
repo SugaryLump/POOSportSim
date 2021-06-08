@@ -45,7 +45,7 @@ public class SportSimView {
 
     public void printTeamsTable(TreeSet<Team> teams) {
         int i = 1;
-        System.out.println("----------------------------------\n" +
+        System.out.println("------------------------------------------------\n" +
                 "#  Nome                  G     V   D   E");
         for (Team team : teams) {
             System.out.printf("%d- %-20s  %-5d %-3d %-3d %-3d%n",
@@ -56,7 +56,33 @@ public class SportSimView {
                     team.getLosses(),
                     team.getTies());
         }
-        System.out.println("----------------------------------");
+        System.out.println("------------------------------------------------\n");
+    }
+
+    public char viewPlayerMenu() {
+        System.out.println("(1)Criar   (2)Editar/Visualizar   (3)Remover   (4)Ordenar   (5)Filtrar   (Q)Regressar");
+        return (input.nextLine().charAt(0));
+    }
+
+    public char viewTeamPlayerMenu() {
+        System.out.println("(1)Adicionar   (2)Editar/Visualizar   (3)Remover   (4)Ordenar   (5)Filtrar   (Q)Regressar");
+        return (input.nextLine().charAt(0));
+    }
+
+    public void printPlayersTable(TreeSet<Player> players) {
+        int i = 1;
+        System.out.println("--------------------------------------------------------------------------------------------------\n" +
+                "#  Nome                  Desporto                  Equipa            Ida. Habilidade");
+        for (Player p : players) {
+            System.out.printf("%d- %-20s  %-20s  %-20s  %-3d %-3d%n",
+                    i++,
+                    p.getName(),
+                    p.getSport(),
+                    p.currentTeam(),
+                    p.getAge(),
+                    p.overallAbility());
+        }
+        System.out.println("--------------------------------------------------------------------------------------------------\n");
     }
 
     public char viewEditTeam(Team t) {
@@ -96,6 +122,25 @@ public class SportSimView {
         return input.nextLine().charAt(0);
     }
 
+    public char viewFilterPlayers(PlayerFilter filter) {
+        System.out.printf("""
+                            Opções de filtro:
+                            (1)Nome: %s
+                            (2)Desporto: %s
+                            (3)Equipa: %s
+                            (4)Idade: %s
+                            (R)Remover filtro
+                            (q)Cancelar
+                            (Q)Confirmar
+                            """
+                , filter.getPlayerName()
+                , filter.getSport()
+                , filter.getTeamName()
+                , filter.getAgeBounds().toString());
+
+        return input.nextLine().charAt(0);
+    }
+
     private void printPlayers (TreeSet<Player> players) {
         int i = 1;
         for (Player player : players) {
@@ -115,6 +160,49 @@ public class SportSimView {
 
     public void printTeamOrders() {
         System.out.println("(1)Nome\n(2)Vitórias\n(3)Derrotas\n(4)Empates");
+    }
+
+    public void printPlayerOrders() {
+        System.out.println("(1)Nome\n(2)Desporto\n(3)Equipa\n(4)Idade\n(5)Habilidade Geral");
+    }
+
+    public int viewSportSelection() {
+        System.out.println("(1)Futebol");
+        return (askForInt("Selecione um desporto.", 1, 1));
+    }
+
+    public String viewEditFootballPlayer(FootballPlayer p) {
+        System.out.println("Desporto: " + p.getSport() +
+                "Habilidade Geral: " + p.overallAbility() +
+                "\nEquipas: " + p.getHistory().toString()  +
+                "\n(1)Nome: " + p.getName() +
+                "\n(2)Idade: " + p.getAge() +
+                "\n(3)Posição: " + p.getPosition() +
+                "\n\nEstatísticas" +
+                "\n(4)Velocidade: " + p.getVelocity() +
+                "\n(5)Resistência: " + p.getResistance() +
+                "\n(6)Destreza: " + p.getDexterity() +
+                "\n(7)Impulso: " + p.getImpulse() +
+                "\n(8)Jogo de Cabeça: " + p.getHeadGame() +
+                "\n(9)Remate: " + p.getShootingSkill() +
+                "\n(10)Passe: " + p.getPassingSkill() +
+                "\n(11)Cruzamento: " + p.getCrossingSkill() +
+                "\n(12)Elasticidade: " + p.getElasticity() +
+                "\n(13)Recuperação de Bola: " + p.getBallRecuperation() +
+                "\n(14)Força " + p.getStrength() +
+                "\n(15)Receção " + p.getReceptionSkill() +
+                "\n\n(q)Cancelar\n(Q)Guardar e saír");
+        return (input.nextLine());
+    }
+
+    public String viewFootballPositions() {
+        System.out.println("(1)Avançado\n" +
+                "(2)Defesa\n" +
+                "(3)Lateral\n" +
+                "(4)Guarda-redes\n" +
+                "(5)Meio-campo");
+        String pos[] = {"Avançado", "Defesa", "Lateral", "Guarda-redes", "Meio-campo"};
+        return pos[askForInt("Selecione uma posição.", 1, 5) - 1];
     }
 
     public int askForInt(String query, int min, int max){
@@ -158,5 +246,7 @@ public class SportSimView {
         System.out.println("Comando não reconhecido.");
     }
 
-    public void teamNameExistsError() {System.out.println("The team name already exists.");}
+    public void nameExistsError() {System.out.println("Esse nome já existe.");}
+
+    public void noValidPlayersError() {System.out.println("Nenhum jogador pode ser adicionado.");}
 }

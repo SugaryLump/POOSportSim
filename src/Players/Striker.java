@@ -1,4 +1,6 @@
+/* OBSOLETE
 package Players;
+
 
 public class Striker extends FootballPlayer{
     public int receptionSkill;
@@ -36,3 +38,4 @@ public class Striker extends FootballPlayer{
         return b;
     }
 }
+*/

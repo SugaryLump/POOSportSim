@@ -1,4 +1,6 @@
+/* OBSOLETE
 package Players;
+
 
 public class Defense extends FootballPlayer{
     public int strength;
@@ -34,3 +36,4 @@ public class Defense extends FootballPlayer{
         return b;
     }
 }
+*/

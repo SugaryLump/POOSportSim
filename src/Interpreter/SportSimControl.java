@@ -14,7 +14,7 @@ enum TeamSortMode {
 }
 
 enum PlayerSortMode {
-    SPORT, NAME, SCORE
+    NAME, SPORT, TEAM, AGE, SKILL
 }
 
 public class SportSimControl {
@@ -22,6 +22,7 @@ public class SportSimControl {
     private TeamSortMode teamSortMode;
     private TreeSet<Player> players;
     private PlayerSortMode playerSortMode;
+    private final String[] sports;
     //private Simulator currentSimulator;
 
     private boolean unsavedChanges;
@@ -29,12 +30,13 @@ public class SportSimControl {
 
     public SportSimControl() {
         this.teams = new TreeSet<>(new ComparatorTeamName());
-        //this.teamSortMode = TeamSortMode.NAME;
-        //this.players = new TreeSet<>();
-        //this.playerSortMode = PlayerSortMode.SPORT;
+        this.teamSortMode = TeamSortMode.NAME;
+        this.players = new TreeSet<>(new ComparatorPlayerSport());
+        this.playerSortMode = PlayerSortMode.SPORT;
 
         this.unsavedChanges = false;
         this.view = new SportSimView();
+        this.sports = new String[]{"Futebol"};
         view.welcomeMessage();
     }
 
@@ -50,8 +52,7 @@ public class SportSimControl {
                     teamMenu(this.teams);
                     break;
                 case '3':
-                    //playerMenu();
-                    System.out.println("Funcionalidade ainda não implementada!");
+                    playerMenu(this.players);
                     break;
                 case '4':
                     //importMenu();
@@ -91,11 +92,12 @@ public class SportSimControl {
                     if (addTeam(newTeam) && newTeam.passesTeamFilter(filter))
                         workingTeams.add(newTeam);
                 }
-                case '2' -> editTeam(getTeamAtIndex(workingTeams, view.askForInt("Selecione o índice da equipa.", 1, workingTeams.size())));
+                case '2' -> editTeam((Team) getFromTreeAtIndex(workingTeams, view.askForInt("Selecione o índice da equipa.", 1, workingTeams.size())));
                 case '3' -> {
-                    Team removeTeam = getTeamAtIndex(workingTeams, view.askForInt("Selecione o índice da equipa.", 1, workingTeams.size()));
+                    Team removeTeam = (Team) getFromTreeAtIndex(workingTeams, view.askForInt("Selecione o índice da equipa.", 1, workingTeams.size()));
                     this.teams.remove(removeTeam);
                     workingTeams.remove(removeTeam);
+                    this.unsavedChanges = true;
                 }
                 case '4' -> workingTeams = changeTeamsOrder(workingTeams);
                 case '5' -> workingTeams = filterTeams(workingTeams, filter);
@@ -106,8 +108,7 @@ public class SportSimControl {
     }
 
     public Team createTeam() {
-        Team newTeam = new Team(view.askForString("Qual o nome da nova equipa?", 1, 20));
-        return newTeam;
+        return new Team(view.askForString("Qual o nome da nova equipa?", 1, 20));
     }
 
     public void editTeam(Team team){
@@ -120,7 +121,7 @@ public class SportSimControl {
                     String newName = view.askForString("Qual o novo nome da equipa?", 1, 20);
 
                     while (teamNameExists(newName)) {
-                        view.teamNameExistsError();
+                        view.nameExistsError();
                         newName = view.askForString("Qual o novo nome da equipa?", 1, 20);
                     }
 
@@ -139,9 +140,7 @@ public class SportSimControl {
                     tmp.setTies(view.askForInt("Indique o número de empates.", 0, 999));
                     changed = true;
                 }
-                case '5' ->
-                        //playerMenu(tmp.getPlayerList());
-                        System.out.println("Funcionalidade ainda não implementada!");
+                case '5' -> teamPlayerMenu(team);
                 case 'q' -> exit = true;
                 case 'Q' -> {
                     if (changed) {
@@ -242,20 +241,261 @@ public class SportSimControl {
         return filteredTeams;
     }
 
-    public void teamPlayersMenu (TreeSet<Player> players) {}
+    //PLAYERS
+    public void playerMenu(TreeSet<Player> workingPlayers) {
+        PlayerFilter filter = new PlayerFilter();
+        boolean exit = false;
+        while (!exit) {
+            view.printPlayersTable(workingPlayers);
 
-    //JOGADORES
-    public void playerMenu() {
+            switch (view.viewPlayerMenu()) {
+                case '1' -> {
+                    Player newPlayer = createPlayer();
+                    if (newPlayer != null) {
+                        if (addPlayer(newPlayer) && newPlayer.passesPlayerFilter(filter))
+                            workingPlayers.add(newPlayer);
+                    }
+                }
+                case '2' -> editPlayer((Player)getFromTreeAtIndex(workingPlayers, view.askForInt("Selecione o índice do jogador.", 1, workingPlayers.size())));
+                case '3' -> {
+                    Player playerToRemove = (Player)getFromTreeAtIndex(workingPlayers, view.askForInt("Selecione o índice do jogador.", 1, workingPlayers.size()));
+                    removePlayer(playerToRemove);
+                }
+                case '4' -> workingPlayers = changePlayersOrder(workingPlayers, this.players);
+
+                case '5' -> workingPlayers = filterPlayers(workingPlayers, this.players, filter);
+                case 'Q' -> exit = true;
+                default -> view.printUnrecognizedCommandError();
+            }
+        }
     }
 
-    public void createPlayer () {}
+    public void teamPlayerMenu(Team team) {
+        TreeSet<Player> workingPlayers = team.getPlayerTree();
+        PlayerFilter filter = new PlayerFilter();
+        boolean exit = false;
+        while (!exit) {
+            view.printPlayersTable(workingPlayers);
 
-    public void editPlayer() {}
+            switch (view.viewTeamPlayerMenu()) {
+                case '1' -> {
+                    String sport = team.sport();
+                    if (team.getPlayerTree().size() == 0)
+                        sport = this.sports[view.viewSportSelection()-1];
+                    String finalSport = sport;
+                    TreeSet<Player> validPlayers = this.players.stream()
+                            .filter(p -> p.getSport().equals(finalSport) && !team.getPlayerTree().contains(p))
+                            .collect(Collectors.toCollection(
+                                    () -> new TreeSet<Player>(players.comparator())));
+                    if (validPlayers.size() > 0) {
+                        view.printPlayersTable(validPlayers);
+                        team.addPlayer((Player)getFromTreeAtIndex(validPlayers, view.askForInt("Selecione o jogador a adicionar", 1, validPlayers.size())));
+                    }
+                    else
+                        view.noValidPlayersError();
+                }
+                case '2' -> editPlayer((Player)getFromTreeAtIndex(workingPlayers, view.askForInt("Selecione o índice do jogador.", 1, workingPlayers.size())));
+                case '3' -> {
+                    Player playerToRemove = (Player)getFromTreeAtIndex(workingPlayers, view.askForInt("Selecione o índice do jogador.", 1, workingPlayers.size()));
+                    team.removePlayer(playerToRemove);
+                    workingPlayers.remove(playerToRemove);
+                }
+                case '4' -> workingPlayers = changePlayersOrder(workingPlayers, team.getPlayerTree());
+
+                case '5' -> workingPlayers = filterPlayers(workingPlayers, team.getPlayerTree(), filter);
+                case 'Q' -> exit = true;
+                default -> view.printUnrecognizedCommandError();
+            }
+        }
+    }
+
+    public Player createPlayer() {
+        Player newPlayer = null;
+        switch(view.viewSportSelection()) {
+            case 1 -> {
+                String name = view.askForString("Qual o nome do jogador?", 1, 20);
+                String position = view.viewFootballPositions();
+                newPlayer = new FootballPlayer(name, position);
+            }
+        }
+
+        return newPlayer;
+    }
+
+    public void editPlayer(Player p) {
+        switch(p.getSport()) {
+            case "Futebol" -> editFootballPlayer((FootballPlayer) p);
+        }
+    }
+
+    public void editFootballPlayer(FootballPlayer p) {
+        FootballPlayer tmp = p.clone();
+        boolean exit = false;
+        boolean changed = false;
+        while (!exit) {
+            switch (view.viewEditFootballPlayer(tmp)) {
+                case "1" -> {
+                    String newName = view.askForString("Qual o novo nome do jogador?", 1, 20);
+
+                    while (playerNameExists(newName)) {
+                        view.nameExistsError();
+                        newName = view.askForString("Qual o novo nome da equipa?", 1, 20);
+                    }
+
+                    tmp.setName(newName);
+                    changed = true;
+                }
+                case "2" -> {
+                    tmp.setAge(view.askForInt("Indique a idade do jogador.", 0, 150));
+                    changed = true;
+                }
+                case "3" -> {
+                    tmp.setPosition(view.viewFootballPositions());
+                    changed = true;
+                }
+                case "4" -> {
+                    tmp.setVelocity(view.askForInt("Indique a nova velocidade.", 0, 999));
+                    changed = true;
+                }
+                case "5" -> {
+                    tmp.setResistance(view.askForInt("Indique a nova resistência.", 0, 999));
+                    changed = true;
+                }
+                case "6" -> {
+                    tmp.setDexterity(view.askForInt("Indique a nova destreza.", 0, 999));
+                    changed = true;
+                }
+                case "7" -> {
+                    tmp.setImpulse(view.askForInt("Indique o novo impulso.", 0, 999));
+                    changed = true;
+                }
+                case "8" -> {
+                    tmp.setHeadGame(view.askForInt("Indique a nova habilidade com cabeça.", 0, 999));
+                    changed = true;
+                }
+                case "9" -> {
+                    tmp.setShootingSkill(view.askForInt("Indique a nova habilidade de remate.", 0, 999));
+                    changed = true;
+                }
+                case "10" -> {
+                    tmp.setPassingSkill(view.askForInt("Indique a nova habilidade de passe.", 0, 999));
+                    changed = true;
+                }
+                case "11" -> {
+                    tmp.setCrossingSkill(view.askForInt("Indique a nova habilidade de cruzamento.", 0, 999));
+                    changed = true;
+                }
+                case "12" -> {
+                    tmp.setElasticity(view.askForInt("Indique a nova elasticidade.", 0, 999));
+                    changed = true;
+                }
+                case "13" -> {
+                    tmp.setBallRecuperation(view.askForInt("Indique a nova habilidade de recuperação de bola.", 0, 999));
+                    changed = true;
+                }
+                case "14" -> {
+                    tmp.setStrength(view.askForInt("Indique a nova força.", 0, 999));
+                    changed = true;
+                }
+                case "15" -> {
+                    tmp.setReceptionSkill(view.askForInt("Indique a nova habilidade de receção.", 0, 999));
+                    changed = true;
+                }
+                case "q" -> exit = true;
+                case "Q" -> {
+                    if (changed) {
+                        this.unsavedChanges = true;
+                        tmp.copyTo(p);
+                    }
+                    exit = true;
+                }
+                default -> view.printUnrecognizedCommandError();
+            }
+        }
+    }
+
+    public TreeSet<Player> changePlayersOrder(TreeSet<Player> workingPlayers, TreeSet<Player> players) {
+        view.printPlayerOrders();
+        TreeSet<Player> newMainPlayers;
+        TreeSet<Player> newWorkingPlayers = workingPlayers;
+        PlayerSortMode newSortMode = PlayerSortMode.values()[view.askForInt("Selecione o índice da ordenação.", 1, 5)-1];
+        if (this.playerSortMode != newSortMode) {
+            this.playerSortMode = newSortMode;
+            newMainPlayers = switch (newSortMode) {
+                case NAME -> new TreeSet<>(new ComparatorPlayerName());
+                case SPORT -> new TreeSet<>(new ComparatorPlayerSport());
+                case TEAM -> new TreeSet<>(new ComparatorPlayerTeam());
+                case AGE -> new TreeSet<>(new ComparatorPlayerAge());
+                case SKILL -> new TreeSet<>(new ComparatorPlayerSkill());
+            };
+            newWorkingPlayers = new TreeSet<>(newMainPlayers.comparator());
+            for (Player player : players)
+                newMainPlayers.add(player);
+            for (Player player : workingPlayers)
+                newWorkingPlayers.add(player);
+            players = newMainPlayers;
+        }
+        return newWorkingPlayers;
+    }
+
+    public TreeSet<Player> filterPlayers (TreeSet<Player> workingPlayers, TreeSet<Player> players, PlayerFilter filter) {
+        PlayerFilter newFilter = filter.clone();
+        boolean exit = false;
+        boolean changed = false;
+        while (!exit) {
+            switch (view.viewFilterPlayers(newFilter)) {
+                case '1':
+                    newFilter.setPlayerName(view.askForString("Nome do jogador a pesquisar?", 0, 20));
+                    changed = true;
+                    break;
+                case '2':
+                    newFilter.setSport(view.askForString("Nome do desporto a pesquisar?", 0, 20));
+                case '3':
+                    newFilter.setTeamName(view.askForString("Nome da equipa a pesquisar?", 0, 20));
+                    changed = true;
+                    break;
+                case '4':
+                    newFilter.setAgeBounds(new Pair<>(
+                            view.askForInt("Número mínimo da idade (0-150)?", 0, 150)
+                            , view.askForInt("Número máximo da idade (0-150)?", 0, 150)));
+                    changed = true;
+                    break;
+                case 'R':
+                    filter.reset();
+                    workingPlayers = players;
+                    exit = true;
+                case 'q':
+                    exit = true;
+                    break;
+                case 'Q':
+                    if (changed) {
+                        newFilter.copyTo(filter);
+                        workingPlayers = players.stream()
+                                .filter(p-> p.passesPlayerFilter(newFilter))
+                                .collect(Collectors.toCollection(
+                                        () -> new TreeSet<>(players.comparator())));
+                    }
+                    exit = true;
+                    break;
+                default:
+                    view.printUnrecognizedCommandError();
+            }
+        }
+        return workingPlayers;
+    }
 
     //GERAL
     public boolean teamNameExists(String name) {
         for (Team t : this.teams) {
             if (t.getTeamName().equals(name))
+                return true;
+        }
+        return false;
+    }
+
+    public boolean playerNameExists(String name) {
+        for (Player p : this.players) {
+            if (p.getName().equals(name))
                 return true;
         }
         return false;
@@ -268,10 +508,24 @@ public class SportSimControl {
         return added;
     }
 
-    public Team getTeamAtIndex(TreeSet<Team> teams, int index) {
+    public void removePlayer (Player p) {
+        for(Team t : this.teams)
+            t.removePlayer(p);
+        this.players.remove(p);
+        this.unsavedChanges = true;
+    }
+
+    public boolean addPlayer (Player p) {
+        boolean added = this.players.add(p);
+        if (added)
+            this.unsavedChanges = true;
+        return added;
+    }
+
+    public Object getFromTreeAtIndex(TreeSet<?> tree, int index) {
         //INDEX ARGUMENT IS FROM USER, STARTS AT 1!!
-        Iterator<Team> it = teams.iterator();
-        Team r = null;
+        Iterator<?> it = tree.iterator();
+        Object r = null;
         while (it.hasNext() && index > 0){
             r = it.next();
             index--;
