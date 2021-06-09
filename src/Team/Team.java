@@ -1,11 +1,7 @@
 package Team;
 
 import Players.*;
-import Auxiliar.Comparators.*;
-
-import java.util.Iterator;
-import java.util.List;
-import java.util.TreeSet;
+import java.util.ArrayList;
 
 public class Team {
     private String teamName; //Team name
@@ -15,7 +11,7 @@ public class Team {
     private int ties; // Ties per season
     private int teamID; // Team Id
     private int teamGlobalAbillity; // Team Global Average Ability
-    private TreeSet<Player> playerTree; // Player List
+    private ArrayList<Player> players; // Player List
 
     public Team (String name) {
         this.teamName = name;
@@ -25,7 +21,7 @@ public class Team {
         ties = 0;
         teamID = 0; //MIKE, NÃO SEI COMO QUERES FAZER COM OS IDs AQUI
         teamGlobalAbillity = 0;
-        playerTree = new TreeSet<>(new ComparatorPlayerName());
+        players = new ArrayList<>();
     }
 
     public Team (Team clone) {
@@ -36,12 +32,12 @@ public class Team {
         this.ties = clone.getTies();
         this.teamID = clone.getTeamID();
         this.teamGlobalAbillity = clone.getTeamGlobalAbillity();
-        this.playerTree = new TreeSet<Player>(clone.getPlayerTree().comparator());
-        for(Player p : clone.getPlayerTree())
-            this.playerTree.add(p);
+        this.players = new ArrayList<Player>();
+        for(Player p : clone.getPlayers())
+            this.players.add(p);
     }
 
-    public Team (String name, int score, int wins, int losses, int ties, int teamID, int teamGlobalAbillity, TreeSet<Player> players) {
+    public Team (String name, int score, int wins, int losses, int ties, int teamID, int teamGlobalAbillity, ArrayList<Player> players) {
         this.teamName = name;
         this.score = score;
         this.wins = wins;
@@ -49,7 +45,7 @@ public class Team {
         this.ties = ties;
         this.teamID = teamID; //MIKE, NÃO SEI COMO QUERES FAZER COM OS IDs AQUI
         this.teamGlobalAbillity = teamGlobalAbillity;
-        this.playerTree = players;
+        this.players = players;
     }
 
     public boolean passesTeamFilter (TeamFilter filter) {
@@ -66,7 +62,7 @@ public class Team {
             && this.ties <= filter.getTieBounds().getR()
             && winRatio >= filter.getWinRatio().getL()
             && winRatio <= filter.getWinRatio().getR()
-            && (!playerSearch || this.playerTree.stream().anyMatch(p -> p.getName().contains(filter.getPlayerName()))));
+            && (!playerSearch || this.players.stream().anyMatch(p -> p.getName().contains(filter.getPlayerName()))));
     }
     public String getTeamName() {
         return teamName;
@@ -96,8 +92,8 @@ public class Team {
 	return teamGlobalAbillity;
     }
 
-    public TreeSet<Player> getPlayerTree() {
-        return playerTree;
+    public ArrayList<Player> getPlayers() {
+        return players;
     }
 
     public void setTeamName(String teamName) {
@@ -128,26 +124,26 @@ public class Team {
 	this.teamGlobalAbillity = teamGlobalAbillity;
     }
 
-    public void setPlayerTree(TreeSet<Player> playerTree) {
-        this.playerTree = playerTree;
+    public void setPlayers(ArrayList<Player> players) {
+        this.players = players;
     }
 
     public String sport() {
-        if (this.playerTree.size() == 0)
+        if (this.players.size() == 0)
             return "";
-        return this.playerTree.first().getSport();
+        return this.players.get(0).getSport();
     }
 
     public void addPlayer(Player p) {
-        this.playerTree.add(p);
-        if (p.currentTeam().equals("Sem equipa"))
-            p.removeNoTeam();
-        p.addPlayerTeam(this.teamName);
+        if (!p.isInTeam()) {
+            this.players.add(p);
+            p.addPlayerTeam(this.teamName);
+        }
     }
 
     public void removePlayer(Player p) {
-        this.playerTree.remove(p);
-        p.addPlayerTeam("Sem equipa");
+        this.players.remove(p);
+        p.setInTeam(false);
     }
 
     public Team clone() {
@@ -168,16 +164,14 @@ public class Team {
     }
 
     public void movePlayer(String playerName, Team team){
-        playerTree.removeIf(player -> player.getName().equals(playerName));
+        players.removeIf(player -> player.getName().equals(playerName));
     }
 
     public int overallAbilityTeam(){
-        TreeSet<Player> team = this.playerTree;
         int i = 0;
-        for (Player p : team) {
+        for (Player p : this.players) {
             i += p.overallAbility();
         }
-        int r = i / team.size();
-        return r;
+        return i / this.players.size();
     }
 }

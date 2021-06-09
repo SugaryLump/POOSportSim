@@ -1,4 +1,4 @@
-import Interpreter.SportSimControl;
+import MVCClasses.SportSimControl;
 
 public class Main {
 

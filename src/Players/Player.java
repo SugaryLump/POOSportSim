@@ -7,6 +7,8 @@ public abstract class Player {
     private String name; //Player name
     private int age; // Player age
     private ArrayList<String> history; // Players last teams (for transfers)
+
+    private boolean inTeam; // Indicates whether the player is currently in a team or not to facilitate transfers
     private String sport; // Sport that the player plays.
 
     public Player(String name, int age, ArrayList<String> history, String sport) {
@@ -72,12 +74,17 @@ public abstract class Player {
         this.sport = sport;
     }
 
-    public void addPlayerTeam(String teamName){
-        this.history.add(0, teamName);
+    public boolean isInTeam() {
+        return inTeam;
     }
 
-    public void removeNoTeam() {
-        this.history.remove(0);
+    public void setInTeam(boolean inTeam) {
+        this.inTeam = inTeam;
+    }
+
+    public void addPlayerTeam(String teamName){
+        this.history.add(0, teamName);
+        this.inTeam = true;
     }
 
     @Override
@@ -93,7 +100,7 @@ public abstract class Player {
     public abstract int overallAbility();
 
     public String currentTeam() {
-        if (history.size() == 0)
+        if (history.size() == 0 || !this.inTeam)
             return "";
         return this.history.get(0);
     }

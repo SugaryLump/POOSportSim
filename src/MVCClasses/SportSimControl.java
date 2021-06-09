@@ -1,10 +1,12 @@
-package Interpreter;
+package MVCClasses;
 
 import Team.*;
 import Players.*;
 import Auxiliar.*;
 import Auxiliar.Comparators.*;
+import com.sun.source.tree.Tree;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -18,24 +20,16 @@ enum PlayerSortMode {
 }
 
 public class SportSimControl {
-    private TreeSet<Team> teams;
-    private TeamSortMode teamSortMode;
-    private TreeSet<Player> players;
-    private PlayerSortMode playerSortMode;
     private final String[] sports;
     //private Simulator currentSimulator;
-
     private boolean unsavedChanges;
+    private SportSimModel model;
     private SportSimView view;
 
     public SportSimControl() {
-        this.teams = new TreeSet<>(new ComparatorTeamName());
-        this.teamSortMode = TeamSortMode.NAME;
-        this.players = new TreeSet<>(new ComparatorPlayerSport());
-        this.playerSortMode = PlayerSortMode.SPORT;
-
         this.unsavedChanges = false;
         this.view = new SportSimView();
+        this.model = new SportSimModel();
         this.sports = new String[]{"Futebol"};
         view.welcomeMessage();
     }
@@ -49,10 +43,10 @@ public class SportSimControl {
                     System.out.println("Funcionalidade ainda não implementada!");
                     break;
                 case '2':
-                    teamMenu(this.teams);
+                    teamMenu();
                     break;
                 case '3':
-                    playerMenu(this.players);
+                    playerMenu();
                     break;
                 case '4':
                     //importMenu();
@@ -73,14 +67,15 @@ public class SportSimControl {
                         exit = true;
                     break;
                 default:
-                    view.printUnrecognizedCommandError();
+                    SportSimView.printUnrecognizedCommandError();
             }
         }
     }
 
     //EQUIPAS
-    public void teamMenu(TreeSet<Team> teams) {
-        TreeSet<Team> workingTeams = teams;
+    public void teamMenu() {
+        TreeSet<Team> workingTeams = model.getTeams().stream()
+                .collect(Collectors.toCollection(() -> new TreeSet<Team>(this.model.getNewTeamComparator())));
         TeamFilter filter = new TeamFilter();
         boolean exit = false;
         while (!exit) {
@@ -89,20 +84,22 @@ public class SportSimControl {
             switch (view.viewTeamMenu()) {
                 case '1' -> {
                     Team newTeam = createTeam();
-                    if (addTeam(newTeam) && newTeam.passesTeamFilter(filter))
+                    if (model.addTeam(newTeam) && newTeam.passesTeamFilter(filter)) {
                         workingTeams.add(newTeam);
+                        this.unsavedChanges = true;
+                    }
                 }
                 case '2' -> editTeam((Team) getFromTreeAtIndex(workingTeams, view.askForInt("Selecione o índice da equipa.", 1, workingTeams.size())));
                 case '3' -> {
                     Team removeTeam = (Team) getFromTreeAtIndex(workingTeams, view.askForInt("Selecione o índice da equipa.", 1, workingTeams.size()));
-                    this.teams.remove(removeTeam);
+                    model.removeTeam(removeTeam);
                     workingTeams.remove(removeTeam);
                     this.unsavedChanges = true;
                 }
                 case '4' -> workingTeams = changeTeamsOrder(workingTeams);
                 case '5' -> workingTeams = filterTeams(workingTeams, filter);
                 case 'Q' -> exit = true;
-                default -> view.printUnrecognizedCommandError();
+                default -> SportSimView.printUnrecognizedCommandError();
             }
         }
     }
@@ -120,8 +117,8 @@ public class SportSimControl {
                 case '1' -> {
                     String newName = view.askForString("Qual o novo nome da equipa?", 1, 20);
 
-                    while (teamNameExists(newName)) {
-                        view.nameExistsError();
+                    while (model.teamNameExists(newName)) {
+                        SportSimView.nameExistsError();
                         newName = view.askForString("Qual o novo nome da equipa?", 1, 20);
                     }
 
@@ -140,7 +137,7 @@ public class SportSimControl {
                     tmp.setTies(view.askForInt("Indique o número de empates.", 0, 999));
                     changed = true;
                 }
-                case '5' -> teamPlayerMenu(team);
+                case '5' -> teamPlayerMenu(tmp);
                 case 'q' -> exit = true;
                 case 'Q' -> {
                     if (changed) {
@@ -149,35 +146,23 @@ public class SportSimControl {
                     }
                     exit = true;
                 }
-                default -> view.printUnrecognizedCommandError();
+                default -> SportSimView.printUnrecognizedCommandError();
             }
         }
     }
 
     public TreeSet<Team> changeTeamsOrder(TreeSet<Team> workingTeams) {
         view.printTeamOrders();
-        TreeSet<Team> newMainTeams;
         TreeSet<Team> newWorkingTeams = workingTeams;
-        TeamSortMode newSortMode = TeamSortMode.values()[view.askForInt("Selecione o índice da ordenação.", 1, 4)-1];
-        if (this.teamSortMode != newSortMode) {
-            this.teamSortMode = newSortMode;
-            newMainTeams = switch (newSortMode) {
-                case NAME -> new TreeSet<>(new ComparatorTeamName());
-                case WINS -> new TreeSet<>(new ComparatorTeamWinsFirst());
-                case LOSSES -> new TreeSet<>(new ComparatorTeamLossesFirst());
-                case TIES -> new TreeSet<>(new ComparatorTeamTiesFirst());
-            };
-            newWorkingTeams = new TreeSet<>(newMainTeams.comparator());
-            for (Team team : this.teams)
-                newMainTeams.add(team);
+        if(model.changeTeamsOrder(TeamSortMode.values()[view.askForInt("Selecione o índice da ordenação.", 1, 4)-1])) {
+            newWorkingTeams = new TreeSet<Team>(model.getNewTeamComparator());
             for (Team team : workingTeams)
                 newWorkingTeams.add(team);
-            this.teams = newMainTeams;
         }
         return newWorkingTeams;
     }
 
-    public TreeSet<Team> filterTeams (TreeSet<Team> filteredTeams, TeamFilter filter) {
+    public TreeSet<Team> filterTeams (TreeSet<Team> workingTeams, TeamFilter filter) {
         TeamFilter newFilter = filter.clone();
         boolean exit = false;
         boolean changed = false;
@@ -219,31 +204,31 @@ public class SportSimControl {
                     changed = true;
                 case 'R':
                     filter.reset();
-                    filteredTeams = this.teams;
+                    workingTeams = model.getTeams();
                     exit = true;
+                    break;
                 case 'q':
                     exit = true;
                     break;
                 case 'Q':
                     if (changed) {
                         newFilter.copyTo(filter);
-                        filteredTeams = this.teams.stream()
-                            .filter(t-> t.passesTeamFilter(newFilter))
-                            .collect(Collectors.toCollection(
-                                    () -> new TreeSet<>(this.teams.comparator())));
+                        workingTeams = model.getFilteredTeams(filter);
                     }
                     exit = true;
                     break;
                 default:
-                    view.printUnrecognizedCommandError();
+                    SportSimView.printUnrecognizedCommandError();
             }
         }
-        return filteredTeams;
+        return workingTeams;
     }
 
     //PLAYERS
-    public void playerMenu(TreeSet<Player> workingPlayers) {
+    public void playerMenu() {
         PlayerFilter filter = new PlayerFilter();
+        TreeSet<Player> workingPlayers = model.getPlayers().stream()
+                .collect(Collectors.toCollection(() -> new TreeSet<Player>(model.getNewPlayerComparator())));
         boolean exit = false;
         while (!exit) {
             view.printPlayersTable(workingPlayers);
@@ -252,26 +237,30 @@ public class SportSimControl {
                 case '1' -> {
                     Player newPlayer = createPlayer();
                     if (newPlayer != null) {
-                        if (addPlayer(newPlayer) && newPlayer.passesPlayerFilter(filter))
+                        if (model.addPlayer(newPlayer) && newPlayer.passesPlayerFilter(filter)) {
                             workingPlayers.add(newPlayer);
+                            this.unsavedChanges = true;
+                        }
                     }
                 }
                 case '2' -> editPlayer((Player)getFromTreeAtIndex(workingPlayers, view.askForInt("Selecione o índice do jogador.", 1, workingPlayers.size())));
                 case '3' -> {
                     Player playerToRemove = (Player)getFromTreeAtIndex(workingPlayers, view.askForInt("Selecione o índice do jogador.", 1, workingPlayers.size()));
-                    removePlayer(playerToRemove);
+                    workingPlayers.remove(playerToRemove);
+                    model.removePlayer(playerToRemove);
+                    this.unsavedChanges = true;
                 }
-                case '4' -> workingPlayers = changePlayersOrder(workingPlayers, this.players);
-
-                case '5' -> workingPlayers = filterPlayers(workingPlayers, this.players, filter);
+                case '4' -> workingPlayers = changePlayersOrder(workingPlayers);
+                case '5' -> workingPlayers = filterPlayers(workingPlayers, model.getPlayers(), filter);
                 case 'Q' -> exit = true;
-                default -> view.printUnrecognizedCommandError();
+                default -> SportSimView.printUnrecognizedCommandError();
             }
         }
     }
 
     public void teamPlayerMenu(Team team) {
-        TreeSet<Player> workingPlayers = team.getPlayerTree();
+        TreeSet<Player> workingPlayers = team.getPlayers().stream()
+                .collect(Collectors.toCollection(() -> new TreeSet<>(model.getNewPlayerComparator())));
         PlayerFilter filter = new PlayerFilter();
         boolean exit = false;
         while (!exit) {
@@ -280,19 +269,22 @@ public class SportSimControl {
             switch (view.viewTeamPlayerMenu()) {
                 case '1' -> {
                     String sport = team.sport();
-                    if (team.getPlayerTree().size() == 0)
+                    if (sport.equals(""))
                         sport = this.sports[view.viewSportSelection()-1];
                     String finalSport = sport;
-                    TreeSet<Player> validPlayers = this.players.stream()
-                            .filter(p -> p.getSport().equals(finalSport) && !team.getPlayerTree().contains(p))
+                    TreeSet<Player> validPlayers = model.getPlayers().stream()
+                            .filter(p -> p.getSport().equals(finalSport) && !p.isInTeam())
                             .collect(Collectors.toCollection(
-                                    () -> new TreeSet<Player>(players.comparator())));
+                                    () -> new TreeSet<>(model.getNewPlayerComparator())));
                     if (validPlayers.size() > 0) {
                         view.printPlayersTable(validPlayers);
-                        team.addPlayer((Player)getFromTreeAtIndex(validPlayers, view.askForInt("Selecione o jogador a adicionar", 1, validPlayers.size())));
+                        Player playerToAdd = (Player)getFromTreeAtIndex(validPlayers, view.askForInt("Selecione o jogador a adicionar", 1, validPlayers.size()));
+                        team.addPlayer(playerToAdd);
+                        if (playerToAdd.passesPlayerFilter(filter))
+                            workingPlayers.add(playerToAdd);
                     }
                     else
-                        view.noValidPlayersError();
+                        SportSimView.noValidPlayersError();
                 }
                 case '2' -> editPlayer((Player)getFromTreeAtIndex(workingPlayers, view.askForInt("Selecione o índice do jogador.", 1, workingPlayers.size())));
                 case '3' -> {
@@ -300,11 +292,10 @@ public class SportSimControl {
                     team.removePlayer(playerToRemove);
                     workingPlayers.remove(playerToRemove);
                 }
-                case '4' -> workingPlayers = changePlayersOrder(workingPlayers, team.getPlayerTree());
-
-                case '5' -> workingPlayers = filterPlayers(workingPlayers, team.getPlayerTree(), filter);
+                case '4' -> workingPlayers = changePlayersOrder(workingPlayers);
+                case '5' -> workingPlayers = filterPlayers(workingPlayers, team.getPlayers(), filter);
                 case 'Q' -> exit = true;
-                default -> view.printUnrecognizedCommandError();
+                default -> SportSimView.printUnrecognizedCommandError();
             }
         }
     }
@@ -337,8 +328,8 @@ public class SportSimControl {
                 case "1" -> {
                     String newName = view.askForString("Qual o novo nome do jogador?", 1, 20);
 
-                    while (playerNameExists(newName)) {
-                        view.nameExistsError();
+                    while (model.playerNameExists(newName)) {
+                        SportSimView.nameExistsError();
                         newName = view.askForString("Qual o novo nome da equipa?", 1, 20);
                     }
 
@@ -409,36 +400,24 @@ public class SportSimControl {
                     }
                     exit = true;
                 }
-                default -> view.printUnrecognizedCommandError();
+                default -> SportSimView.printUnrecognizedCommandError();
             }
         }
     }
 
-    public TreeSet<Player> changePlayersOrder(TreeSet<Player> workingPlayers, TreeSet<Player> players) {
+    public TreeSet<Player> changePlayersOrder(TreeSet<Player> workingPlayers) {
         view.printPlayerOrders();
-        TreeSet<Player> newMainPlayers;
         TreeSet<Player> newWorkingPlayers = workingPlayers;
-        PlayerSortMode newSortMode = PlayerSortMode.values()[view.askForInt("Selecione o índice da ordenação.", 1, 5)-1];
-        if (this.playerSortMode != newSortMode) {
-            this.playerSortMode = newSortMode;
-            newMainPlayers = switch (newSortMode) {
-                case NAME -> new TreeSet<>(new ComparatorPlayerName());
-                case SPORT -> new TreeSet<>(new ComparatorPlayerSport());
-                case TEAM -> new TreeSet<>(new ComparatorPlayerTeam());
-                case AGE -> new TreeSet<>(new ComparatorPlayerAge());
-                case SKILL -> new TreeSet<>(new ComparatorPlayerSkill());
-            };
-            newWorkingPlayers = new TreeSet<>(newMainPlayers.comparator());
-            for (Player player : players)
-                newMainPlayers.add(player);
+
+        if(model.changePlayersOrder(PlayerSortMode.values()[view.askForInt("Selecione o índice da ordenação.", 1, 5)-1])) {
+            newWorkingPlayers = new TreeSet<Player>(model.getNewPlayerComparator());
             for (Player player : workingPlayers)
                 newWorkingPlayers.add(player);
-            players = newMainPlayers;
         }
         return newWorkingPlayers;
     }
 
-    public TreeSet<Player> filterPlayers (TreeSet<Player> workingPlayers, TreeSet<Player> players, PlayerFilter filter) {
+    public TreeSet<Player> filterPlayers (TreeSet<Player> workingPlayers, Collection<Player> players, PlayerFilter filter) {
         PlayerFilter newFilter = filter.clone();
         boolean exit = false;
         boolean changed = false;
@@ -462,8 +441,9 @@ public class SportSimControl {
                     break;
                 case 'R':
                     filter.reset();
-                    workingPlayers = players;
+                    workingPlayers = players.stream().collect(Collectors.toCollection(() -> new TreeSet<>(model.getNewPlayerComparator())));
                     exit = true;
+                    break;
                 case 'q':
                     exit = true;
                     break;
@@ -473,55 +453,18 @@ public class SportSimControl {
                         workingPlayers = players.stream()
                                 .filter(p-> p.passesPlayerFilter(newFilter))
                                 .collect(Collectors.toCollection(
-                                        () -> new TreeSet<>(players.comparator())));
+                                        () -> new TreeSet<>(model.getNewPlayerComparator())));
                     }
                     exit = true;
                     break;
                 default:
-                    view.printUnrecognizedCommandError();
+                    SportSimView.printUnrecognizedCommandError();
             }
         }
         return workingPlayers;
     }
 
     //GERAL
-    public boolean teamNameExists(String name) {
-        for (Team t : this.teams) {
-            if (t.getTeamName().equals(name))
-                return true;
-        }
-        return false;
-    }
-
-    public boolean playerNameExists(String name) {
-        for (Player p : this.players) {
-            if (p.getName().equals(name))
-                return true;
-        }
-        return false;
-    }
-
-    public boolean addTeam (Team t) {
-        boolean added = this.teams.add(t);
-        if (added)
-            this.unsavedChanges = true;
-        return added;
-    }
-
-    public void removePlayer (Player p) {
-        for(Team t : this.teams)
-            t.removePlayer(p);
-        this.players.remove(p);
-        this.unsavedChanges = true;
-    }
-
-    public boolean addPlayer (Player p) {
-        boolean added = this.players.add(p);
-        if (added)
-            this.unsavedChanges = true;
-        return added;
-    }
-
     public Object getFromTreeAtIndex(TreeSet<?> tree, int index) {
         //INDEX ARGUMENT IS FROM USER, STARTS AT 1!!
         Iterator<?> it = tree.iterator();

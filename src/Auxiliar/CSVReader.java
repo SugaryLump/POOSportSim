@@ -1,5 +1,7 @@
 package Auxiliar;
 
+import MVCClasses.SportSimModel;
+import MVCClasses.SportSimView;
 import Players.*;
 import Team.*;
 import Auxiliar.Comparators.*;
@@ -12,22 +14,16 @@ import java.util.TreeSet;
 
 public class CSVReader {
 
-    //Team: name;score;wins;losses;ties;teamID;teamGlobalAbility;[playerNames]
+    //Team: name;score;wins;losses;ties;teamID;teamGlobalAbility;[playerNames]\n
     public static ArrayList<Team> importTeamsFromFile(String filename, Set<Player> players) throws FileNotFoundException {
         ArrayList<Team> teams = new ArrayList<Team>();
         Scanner file = new Scanner(new File(filename));
         while (file.hasNextLine()) {
             String[] line = file.nextLine().split("[;\n]");
             if (line.length == 8) {
-                String[] playerNames = line[7].split("[\\[,]");
+                String[] playerNames = line[7].split("[\\[,\\]]");
 
-                TreeSet<Player> ps = new TreeSet<>(new ComparatorPlayerName());
-                for (String name : playerNames) {
-                    players.stream()
-                            .filter(p -> p.getName().equals(name))
-                            .findFirst()
-                            .ifPresent(ps::add);
-                }
+                ArrayList<Player> ps = new ArrayList<>();
                 Team team = new Team(line[0]
                         , Integer.parseInt(line[1])
                         , Integer.parseInt(line[2])
@@ -36,6 +32,18 @@ public class CSVReader {
                         , Integer.parseInt(line[5])
                         , Integer.parseInt(line[6])
                         , ps);
+                for (String name : playerNames) {
+                    Player addingPlayer = players.stream()
+                            .filter(p -> p.getName().equals(name))
+                            .findFirst().orElse(null);
+
+                    if (addingPlayer == null)
+                        SportSimView.playerNotFoundError(name);
+                    else if (addingPlayer.isInTeam())
+                        SportSimView.playerAlreadyInTeamError(name);
+                    else
+                        team.addPlayer(addingPlayer);
+                }
                 teams.add(team);
             }
         }
@@ -46,6 +54,19 @@ public class CSVReader {
 
     public static ArrayList<Player> importPlayersFromFile(String filename) throws FileNotFoundException{return null;}
 
+    public static void exportModelToFile(SportSimModel model, String filename) throws IOException {
+        File obj = new File(filename);
+        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(obj));
+        oos.writeObject(model);
+        oos.close();
+    }
+
+    public static SportSimModel importModelFromFile(String filename) throws IOException, ClassNotFoundException {
+        File obj = new File(filename);
+        ObjectInputStream oos = new ObjectInputStream(new FileInputStream(obj));
+        return (SportSimModel)oos.readObject();
+    }
+
     public static void exportTeamToFile(Set<Team> teams, String filename) throws IOException {
         File obj = new File(filename);
         ObjectOutputStream objout = new ObjectOutputStream(new FileOutputStream(obj));
@@ -53,7 +74,7 @@ public class CSVReader {
         objout.close();
     }
 
-    public static void exportPlayerToFile(Set<Player> players, String filename) throws IOException {
+    public static void exportPlayersToFile(Set<Player> players, String filename) throws IOException {
         File obj = new File(filename);
         ObjectOutputStream objout = new ObjectOutputStream(new FileOutputStream(obj));
         objout.writeObject(players);

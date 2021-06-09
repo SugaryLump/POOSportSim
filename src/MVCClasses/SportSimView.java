@@ -1,13 +1,9 @@
-package Interpreter;
+package MVCClasses;
 import Team.*;
 import Players.*;
-import Auxiliar.*;
-import Auxiliar.Comparators.*;
 
-import java.util.Iterator;
 import java.util.TreeSet;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
 public class SportSimView {
     private final Scanner input;
@@ -72,7 +68,7 @@ public class SportSimView {
     public void printPlayersTable(TreeSet<Player> players) {
         int i = 1;
         System.out.println("--------------------------------------------------------------------------------------------------\n" +
-                "#  Nome                  Desporto                  Equipa            Ida. Habilidade");
+                "#  Nome                  Desporto                  Equipa                  Ida. Habilidade");
         for (Player p : players) {
             System.out.printf("%d- %-20s  %-20s  %-20s  %-3d %-3d%n",
                     i++,
@@ -242,11 +238,15 @@ public class SportSimView {
         return name;
     }
 
-    public void printUnrecognizedCommandError() {
+    public static void printUnrecognizedCommandError() {
         System.out.println("Comando não reconhecido.");
     }
 
-    public void nameExistsError() {System.out.println("Esse nome já existe.");}
+    public static void nameExistsError() {System.out.println("Esse nome já existe.");}
 
-    public void noValidPlayersError() {System.out.println("Nenhum jogador pode ser adicionado.");}
+    public static void noValidPlayersError() {System.out.println("Nenhum jogador pode ser adicionado.");}
+
+    public static void playerNotFoundError(String player) {System.out.println(player + " não foi encontrado.");}
+
+    public static void playerAlreadyInTeamError(String player) {System.out.println(player + " já está numa equipa");}
 }
