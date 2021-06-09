@@ -31,6 +31,7 @@ public abstract class Player {
         this.age = p.getAge();
         this.history = new ArrayList<String>(p.getHistory());
         this.sport = p.getSport();
+        this.inTeam = p.isInTeam();
 
     }
 
