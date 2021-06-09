@@ -1,9 +1,10 @@
 package Players;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.ArrayList;
 
-public abstract class Player {
+public abstract class Player implements Serializable {
     private String name; //Player name
     private int age; // Player age
     private ArrayList<String> history; // Players last teams (for transfers)

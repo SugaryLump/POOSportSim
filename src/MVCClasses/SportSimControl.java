@@ -3,9 +3,8 @@ package MVCClasses;
 import Team.*;
 import Players.*;
 import Auxiliar.*;
-import Auxiliar.Comparators.*;
-import com.sun.source.tree.Tree;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.TreeSet;
@@ -49,16 +48,13 @@ public class SportSimControl {
                     playerMenu();
                     break;
                 case '4':
-                    //importMenu();
-                    System.out.println("Funcionalidade ainda não implementada!");
+                    importMenu();
                     break;
                 case '5':
-                    //exportMenu();
-                    System.out.println("Funcionalidade ainda não implementada!");
+                    exportMenu();
                     break;
                 case '6':
-                    //printCredits();
-                    System.out.println("Funcionalidade ainda não implementada!");
+                    view.printCredits();
                     break;
                 case 'Q':
                     if (unsavedChanges)
@@ -137,7 +133,7 @@ public class SportSimControl {
                     tmp.setTies(view.askForInt("Indique o número de empates.", 0, 999));
                     changed = true;
                 }
-                case '5' -> teamPlayerMenu(tmp);
+                case '5' -> teamPlayerMenu(team);
                 case 'q' -> exit = true;
                 case 'Q' -> {
                     if (changed) {
@@ -464,6 +460,25 @@ public class SportSimControl {
         return workingPlayers;
     }
 
+    //EXPORT
+    public void exportMenu() {
+        try {
+            FileHandler.exportModelToFile(this.model, view.askForString("Qual o nome do ficheiro?", 1, 30));
+        }
+        catch (IOException e) {
+            SportSimView.showException(e);
+        }
+    }
+
+    //IMPORT
+    public void importMenu() {
+        try {
+            this.model = FileHandler.importModelFromFile(view.askForString("Qual o nome do ficheiro?", 1, 30));
+        }
+        catch (IOException | ClassNotFoundException e) {
+            SportSimView.showException(e);
+        }
+    }
     //GERAL
     public Object getFromTreeAtIndex(TreeSet<?> tree, int index) {
         //INDEX ARGUMENT IS FROM USER, STARTS AT 1!!

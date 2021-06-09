@@ -5,11 +5,12 @@ import Players.*;
 import Team.*;
 import com.sun.source.tree.Tree;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-public class SportSimModel {
+public class SportSimModel implements Serializable {
     private TreeSet<Team> teams;
     private TeamSortMode teamSortMode;
     private TreeSet<Player> players;

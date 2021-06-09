@@ -1,10 +1,11 @@
 package Auxiliar.Comparators;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import Team.*;
 
-public class ComparatorTeamTiesFirst implements Comparator<Team>{
+public class ComparatorTeamTiesFirst implements Comparator<Team>, Serializable {
     public int compare (Team t1, Team t2) {
         int cmp = t2.getTies()-t1.getTies();
         if (cmp == 0) {

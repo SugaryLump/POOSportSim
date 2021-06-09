@@ -17,6 +17,7 @@ public class SportSimView {
         System.out.println("Bem vindo ao simulador de desportos.");
     }
 
+    public void printCredits() {System.out.println("Alexandre Flores, A93220\nRita Lino, A93196\nMiguel Gomes, A93294");}
 
     public char viewMainMenu() {
         System.out.println("""
@@ -249,4 +250,6 @@ public class SportSimView {
     public static void playerNotFoundError(String player) {System.out.println(player + " não foi encontrado.");}
 
     public static void playerAlreadyInTeamError(String player) {System.out.println(player + " já está numa equipa");}
+
+    public static void showException (Exception e) {System.out.println(e.toString());}
 }

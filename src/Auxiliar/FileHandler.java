@@ -12,10 +12,10 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class CSVReader {
+public class FileHandler {
 
     //Team: name;score;wins;losses;ties;teamID;teamGlobalAbility;[playerNames]\n
-    public static ArrayList<Team> importTeamsFromFile(String filename, Set<Player> players) throws FileNotFoundException {
+    public static ArrayList<Team> importTeamsFromCSVFile(String filename, Set<Player> players) throws FileNotFoundException {
         ArrayList<Team> teams = new ArrayList<Team>();
         Scanner file = new Scanner(new File(filename));
         while (file.hasNextLine()) {
@@ -52,7 +52,7 @@ public class CSVReader {
     }
 
 
-    public static ArrayList<Player> importPlayersFromFile(String filename) throws FileNotFoundException{return null;}
+    public static ArrayList<Player> importPlayersFromCSVFile(String filename) throws FileNotFoundException{return null;}
 
     public static void exportModelToFile(SportSimModel model, String filename) throws IOException {
         File obj = new File(filename);
