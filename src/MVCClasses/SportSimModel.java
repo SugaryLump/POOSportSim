@@ -1,6 +1,7 @@
 package MVCClasses;
 
 import Auxiliar.Comparators.*;
+import Game.Game;
 import Players.*;
 import Team.*;
 
@@ -101,7 +102,7 @@ public class SportSimModel implements Serializable {
         return false;
     }
 
-    public Team teamNameGet(String name) {
+    public Team getTeamByName(String name) {
         for (Team t : this.teams) {
             if (t.getTeamName().equals(name))
                 return t;
@@ -146,5 +147,22 @@ public class SportSimModel implements Serializable {
             case AGE -> (new ComparatorPlayerAge());
             case SKILL -> (new ComparatorPlayerSkill());
         };
+    }
+
+    public void updateInfoFromGame(Game game) {
+        int scoreT1 = game.getGameScore().getL();
+        int scoreT2 = game.getGameScore().getR();
+        Team t1 = game.getTeams().getL();
+        Team t2 = game.getTeams().getR();
+        if (scoreT1 > scoreT2) {
+            t1.setWins(t1.getWins() + 1);
+            t2.setLosses(t2.getLosses() + 1);
+        } else if (scoreT2 > scoreT1) {
+            t2.setWins(t2.getWins() + 1);
+            t1.setLosses(t1.getLosses() + 1);
+        } else {
+            t1.setTies(t1.getTies() + 1);
+            t2.setTies(t2.getTies() + 1);
+        }
     }
 }

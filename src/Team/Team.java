@@ -11,7 +11,6 @@ public class Team implements Serializable {
     private int wins; // Wins per season
     private int losses; //Losses per season
     private int ties; // Ties per season
-    private int teamID; // Team Id
     private int teamGlobalAbillity; // Team Global Average Ability
     private ArrayList<Player> players; // Player List
 
@@ -21,7 +20,6 @@ public class Team implements Serializable {
         wins = 0;
         losses = 0;
         ties = 0;
-        teamID = 0; //MIKE, NÃO SEI COMO QUERES FAZER COM OS IDs AQUI
         teamGlobalAbillity = 0;
         players = new ArrayList<>();
     }
@@ -32,20 +30,18 @@ public class Team implements Serializable {
         this.wins = clone.getWins();
         this.losses = clone.getLosses();
         this.ties = clone.getTies();
-        this.teamID = clone.getTeamID();
         this.teamGlobalAbillity = clone.getTeamGlobalAbillity();
         this.players = new ArrayList<Player>();
         for(Player p : clone.getPlayers())
             this.players.add(p);
     }
 
-    public Team (String name, int score, int wins, int losses, int ties, int teamID, int teamGlobalAbillity, ArrayList<Player> players) {
+    public Team (String name, int score, int wins, int losses, int ties, int teamGlobalAbillity, ArrayList<Player> players) {
         this.teamName = name;
         this.score = score;
         this.wins = wins;
         this.losses = losses;
         this.ties = ties;
-        this.teamID = teamID; //MIKE, NÃO SEI COMO QUERES FAZER COM OS IDs AQUI
         this.teamGlobalAbillity = teamGlobalAbillity;
         this.players = players;
     }
@@ -86,10 +82,6 @@ public class Team implements Serializable {
         return ties;
     }
 
-    public int getTeamID() {
-        return teamID;
-    }
-
     public int getTeamGlobalAbillity(){
 	return teamGlobalAbillity;
     }
@@ -116,10 +108,6 @@ public class Team implements Serializable {
 
     public void setTies(int ties) {
         this.ties = ties;
-    }
-
-    public void setTeamID(int teamID) {
-        this.teamID = teamID;
     }
 
     public void setTeamGlobalAbillity(int teamGlobalAbillity){
@@ -154,7 +142,6 @@ public class Team implements Serializable {
 
     public void copyTo(Team team) {
         team.setTeamName(this.teamName);
-        team.setTeamID(this.teamID);
         team.setTies(this.ties);
         team.setWins(this.wins);
         team.setScore(this.score);

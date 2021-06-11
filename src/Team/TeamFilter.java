@@ -1,10 +1,6 @@
 package Team;
 
 import Auxiliar.*;
-
-
-import java.util.TreeSet;
-
 public class TeamFilter {
     private Pair<Integer, Integer> winBounds;
     private Pair<Integer, Integer> loseBounds;
@@ -25,9 +21,6 @@ public class TeamFilter {
     }
 
     public TeamFilter(TeamFilter cloneFilter) {
-        //this.teamName = cloneFilter.getTeamName();
-        //this.winBounds = new Pair<>(cloneFilter.getWinBounds().getL()
-        //       , cloneFilter.getWinBounds().getR());
         this.winBounds = cloneFilter.getWinBounds();
         this.loseBounds = cloneFilter.getLoseBounds();
         this.tieBounds = cloneFilter.getTieBounds();

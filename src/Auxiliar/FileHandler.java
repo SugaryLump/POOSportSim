@@ -15,41 +15,41 @@ import java.util.TreeSet;
 public class FileHandler {
 
     //Team: name;score;wins;losses;ties;teamID;teamGlobalAbility;[playerNames]\n
-    public static ArrayList<Team> importTeamsFromCSVFile(String filename, Set<Player> players) throws FileNotFoundException {
-        ArrayList<Team> teams = new ArrayList<Team>();
-        Scanner file = new Scanner(new File(filename));
-        while (file.hasNextLine()) {
-            String[] line = file.nextLine().split("[;\n]");
-            if (line.length == 8) {
-                String[] playerNames = line[7].split("[\\[,\\]]");
-
-                ArrayList<Player> ps = new ArrayList<>();
-                Team team = new Team(line[0]
-                        , Integer.parseInt(line[1])
-                        , Integer.parseInt(line[2])
-                        , Integer.parseInt(line[3])
-                        , Integer.parseInt(line[4])
-                        , Integer.parseInt(line[5])
-                        , Integer.parseInt(line[6])
-                        , ps);
-                for (String name : playerNames) {
-                    Player addingPlayer = players.stream()
-                            .filter(p -> p.getName().equals(name))
-                            .findFirst().orElse(null);
-
-                    if (addingPlayer == null)
-                        SportSimView.playerNotFoundError(name);
-                    else if (addingPlayer.isInTeam())
-                        SportSimView.playerAlreadyInTeamError(name);
-                    else
-                        team.addPlayer(addingPlayer);
-                }
-                teams.add(team);
-            }
-        }
-
-        return teams;
-    }
+//    public static ArrayList<Team> importTeamsFromCSVFile(String filename, Set<Player> players) throws FileNotFoundException {
+//        ArrayList<Team> teams = new ArrayList<Team>();
+//        Scanner file = new Scanner(new File(filename));
+//        while (file.hasNextLine()) {
+//            String[] line = file.nextLine().split("[;\n]");
+//            if (line.length == 8) {
+//                String[] playerNames = line[7].split("[\\[,\\]]");
+//
+//                ArrayList<Player> ps = new ArrayList<>();
+//                Team team = new Team(line[0]
+//                        , Integer.parseInt(line[1])
+//                        , Integer.parseInt(line[2])
+//                        , Integer.parseInt(line[3])
+//                        , Integer.parseInt(line[4])
+//                        , Integer.parseInt(line[5])
+//                        , Integer.parseInt(line[6])
+//                        , ps);
+//                for (String name : playerNames) {
+//                    Player addingPlayer = players.stream()
+//                            .filter(p -> p.getName().equals(name))
+//                            .findFirst().orElse(null);
+//
+//                    if (addingPlayer == null)
+//                        SportSimView.playerNotFoundError(name);
+//                    else if (addingPlayer.isInTeam())
+//                        SportSimView.playerAlreadyInTeamError(name);
+//                    else
+//                        team.addPlayer(addingPlayer);
+//                }
+//                teams.add(team);
+//            }
+//        }
+//
+//        return teams;
+//    }
 
 
     public static ArrayList<Player> importPlayersFromCSVFile(String filename) throws FileNotFoundException{return null;}

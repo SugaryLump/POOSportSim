@@ -22,7 +22,7 @@ public class SportSimView {
         System.out.println("Bem vindo ao simulador de desportos.");
     }
 
-    public String teamselect() {
+    public String viewTeamSelect() {
         System.out.println("Insira o nome de uma equipa para a sua simulação:");
 
         return (input.nextLine());
@@ -48,10 +48,6 @@ public class SportSimView {
 	    //Dar print de um erro a dizer que a equpa nao existe;
     }
 
-    public void loadGame(){
-	    //Dar print de um erro a dizer para dar load a um jogo
-    }
-
     public void printGame(Pair<Team,Team> teams){
 	    //Dar print as estatisticas de modo Fancy-ish
     }
@@ -59,6 +55,7 @@ public class SportSimView {
     public char getPause(){
 	    //Durante a simulação o jogo pode ser "pausado", mas ainda nao foi implementado nada nesse estado
 	    //pedir ao utilizador se quer pausar o jogo e se sim dar retunr de um char (1 if yes)
+        return askForString("Pretende pausar o jogo?", 1, 1).charAt(0);
     }
 
     public char viewSim() {
@@ -98,10 +95,10 @@ public class SportSimView {
 
     public void printTeamsTable(TreeSet<Team> teams) {
         int i = 1;
-        System.out.println("------------------------------------------------\n" +
-                "#  Nome                  G     V   D   E");
+        System.out.println("----------------------------------------------------------------------------------------------------------------------------------\n" +
+                "#  Nome                                      G     V   D   E");
         for (Team team : teams) {
-            System.out.printf("%d- %-20s  %-5d %-3d %-3d %-3d%n",
+            System.out.printf("%d- %-40s  %-5d %-3d %-3d %-3d%n",
                     i++,
                     team.getTeamName(),
                     team.getTeamGlobalAbillity(),
@@ -109,7 +106,7 @@ public class SportSimView {
                     team.getLosses(),
                     team.getTies());
         }
-        System.out.println("------------------------------------------------\n");
+        System.out.println("----------------------------------------------------------------------------------------------------------------------------------\n");
     }
 
     public char viewPlayerMenu() {
@@ -124,10 +121,10 @@ public class SportSimView {
 
     public void printPlayersTable(TreeSet<Player> players) {
         int i = 1;
-        System.out.println("--------------------------------------------------------------------------------------------------\n" +
-                "#  Nome                  Desporto                  Equipa                  Ida. Habilidade");
+        System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n" +
+                "#  Nome                                                Desporto              Equipa                                     Ida. Habilidade");
         for (Player p : players) {
-            System.out.printf("%d- %-20s  %-20s  %-20s  %-3d %-3d%n",
+            System.out.printf("%d- %-50s  %-20s  %-40s  %-3d %-3d%n",
                     i++,
                     p.getName(),
                     p.getSport(),
@@ -135,12 +132,11 @@ public class SportSimView {
                     p.getAge(),
                     p.overallAbility());
         }
-        System.out.println("--------------------------------------------------------------------------------------------------\n");
+        System.out.println("------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n");
     }
 
     public char viewEditTeam(Team t) {
-        System.out.println("ID: " + t.getTeamID() +
-                "\nHabilidade Global: " + t.getTeamGlobalAbillity() +
+        System.out.println("Habilidade Global: " + t.getTeamGlobalAbillity() +
                 "\n(1)Nome: " + t.getTeamName() +
                 "\n(2)Vitórias: " + t.getWins() +
                 "\n(3)Derrotas: " + t.getLosses() +
@@ -249,12 +245,12 @@ public class SportSimView {
     }
 
     public String viewFootballPositions() {
-        System.out.println("(1)Avançado\n" +
+        System.out.println("(1)Avancado\n" +
                 "(2)Defesa\n" +
                 "(3)Lateral\n" +
-                "(4)Guarda-redes\n" +
-                "(5)Meio-campo");
-        String pos[] = {"Avançado", "Defesa", "Lateral", "Guarda-redes", "Meio-campo"};
+                "(4)Guarda-Redes\n" +
+                "(5)Medio");
+        String pos[] = {"Avancado", "Defesa", "Lateral", "Guarda-Redes", "Medio"};
         return pos[askForInt("Selecione uma posição.", 1, 5) - 1];
     }
 
@@ -295,7 +291,7 @@ public class SportSimView {
         return name;
     }
 
-    public static void printUnrecognizedCommandError() {
+    public static void unrecognizedCommandError() {
         System.out.println("Comando não reconhecido.");
     }
 
@@ -306,6 +302,10 @@ public class SportSimView {
     public static void playerNotFoundError(String player) {System.out.println(player + " não foi encontrado.");}
 
     public static void playerAlreadyInTeamError(String player) {System.out.println(player + " já está numa equipa");}
+
+    public static void gameNotLoadedError(){
+        System.out.println("Nenhuma simulação está carregada");
+    }
 
     public static void showException (Exception e) {System.out.println(e.toString());}
 }

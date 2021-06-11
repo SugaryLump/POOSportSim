@@ -1,5 +1,6 @@
 package Game;
 
+import java.util.Date;
 import java.util.List;
 
 import Auxiliar.*;
@@ -10,24 +11,21 @@ public class Game {
     private int time; // Time Elapsed (0-45/45-90);
     private Pair<Integer,Integer> gameScore; // Pair with the game score
     private Pair<Team,Team> teams;
-    private int day; // Day of game daymonth(00×00×)
-    private int gameID; // Game ID
+    private Date day; // Day of game daymonth(00×00×)
     private Events events; // Numero de Eventos num jogo (para time thinghys)
 
 	public Game() {
-		this.time = 0000;
+		this.time = 0;
 		this.gameScore = new Pair<Integer, Integer>(0,0);
 		this.teams = new Pair<Team, Team>(null,null);
-		this.day = 00000;
-		this.gameID = 00000;
+		this.day = new Date();
 		this.events = new Events();
 	}
-	public Game(int time, Pair<Integer, Integer> gameScore, Pair<Team,Team> teams, int day, int gameID, Events events) {
+	public Game(int time, Pair<Integer, Integer> gameScore, Pair<Team,Team> teams, Date day, Events events) {
 		this.time = time;
 		this.gameScore = gameScore;
 		this.teams = teams;
 		this.day = day;
-		this.gameID = gameID;
 		this.events = events;
 	}
 
@@ -43,12 +41,8 @@ public class Game {
         return teams;
     }
 
-    public int getDay() {
+    public Date getDay() {
         return day;
-    }
-
-    public int getGameID() {
-        return gameID;
     }
 
     public Events get_events(){
@@ -67,19 +61,15 @@ public class Game {
         this.teams = teams;
     }
 
-    public void setDay(int day) {
+    public void setDay(Date day) {
         this.day = day;
     }
 
-    public void setGameID(int gameID) {
-        this.gameID = gameID;
-    }
-
-    public void set_events(Events event){
+    public void setEvents(Events event){
 	    this.events = event;
     }
 
-    public int event_new(){
+    public int newEvent(){
 	    events.rand_stuf();
 	    int outcome = events.random();
 	    Things ting = new Things();
@@ -126,7 +116,7 @@ public class Game {
 		    default:
 			    break;
 	    }
-	    List<Things> lt = events.getGame_events_list();
+	    List<Things> lt = events.getGameEventsList();
 	    lt.add(ting);
 	    return 0;
     }

@@ -28,7 +28,7 @@ public class Simulator{
 
 	public int l(boolean cnt){
 		if (cnt){
-			return game.event_new();
+			return game.newEvent();
 		}
 		return -1;
 	}

@@ -4,6 +4,7 @@ import Team.*;
 import Players.*;
 import Auxiliar.*;
 import Game.*;
+import FullParser.*;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -28,9 +29,15 @@ public class SportSimControl {
 
     public SportSimControl() {
         this.unsavedChanges = false;
-	this.currentSimulator = new Simulator();
+	    this.currentSimulator = new Simulator();
         this.view = new SportSimView();
-        this.model = new SportSimModel();
+        try {
+            this.model = Parser.parse("logs.txt");
+        }
+        catch (LinhaIncorretaException e) {
+            SportSimView.showException(e);
+            this.model = new SportSimModel();
+        }
         this.sports = new String[]{"Futebol"};
         view.welcomeMessage();
     }
@@ -64,7 +71,7 @@ public class SportSimControl {
                         exit = true;
                     break;
                 default:
-                    SportSimView.printUnrecognizedCommandError();
+                    SportSimView.unrecognizedCommandError();
             }
         }
     }
@@ -77,35 +84,35 @@ public class SportSimControl {
 	    while(!exit){
 		    switch(view.viewSim()){
 			    case '1':
-				    String team1 = view.teamselect();
-				    String team2 = view.teamselect();
-				    if(!(model.teamNameExists(team2)) && !(model.teamNameExists(team1)))
-					    view.teamNotFound();
-				    else
-					    loaded = true;
-					    currentSimulator.teamSelection(model.teamNameGet(team1),model.teamNameGet(team2));
+			        TreeSet<Team> displayTeams = model.getTeams().stream()
+                            .collect(Collectors.toCollection(() -> new TreeSet<>(model.getNewTeamComparator())));
+			        view.printTeamsTable(displayTeams);
+			        Team team1 = (Team)getFromTreeAtIndex(displayTeams, view.askForInt("Selecione uma equipa", 1, displayTeams.size()));
+                    view.printTeamsTable(displayTeams.stream()
+                            .filter(t -> t.sport().equals(team1.sport()) && !t.equals(team1))
+                            .collect(Collectors.toCollection(() -> new TreeSet<>(model.getNewTeamComparator()))));
+                    Team team2 = (Team)getFromTreeAtIndex(displayTeams, view.askForInt("Selecione uma equipa", 1, displayTeams.size()));
+                    loaded = true;
+                    currentSimulator.teamSelection(team1, team2);
 			    case '2':
 				    view.game_stats(currentSimulator);
 
 			    case '3':
 				    if (loaded)
-					    rungame();
+					    runGameMenu();
 				    else
-					    view.loadGame();
+					    SportSimView.gameNotLoadedError();
 			    case 'Q':
-				      if(unsavedChanges)
-					      exit = view.exitConfirm();
-				      else
 					      exit = true;
 			    default:
-				    SportSimView.printUnrecognizedCommandError();
+				    SportSimView.unrecognizedCommandError();
 		    }
 	    }
     }
 
-    public void rungame(){
+    public void runGameMenu(){
 	    boolean done = false;
-	    int x = 0;
+	    int x;
 	    while(!done){
 		    view.printGame(currentSimulator.get_game().getTeams());
 		    switch(view.getPause()){
@@ -119,6 +126,7 @@ public class SportSimControl {
 			    done = true;
 	    }
 	    view.printResults(currentSimulator.get_game());
+	    model.updateInfoFromGame(currentSimulator.get_game());
     }
 
     //EQUIPAS
@@ -148,7 +156,7 @@ public class SportSimControl {
                 case '4' -> workingTeams = changeTeamsOrder(workingTeams);
                 case '5' -> workingTeams = filterTeams(workingTeams, filter);
                 case 'Q' -> exit = true;
-                default -> SportSimView.printUnrecognizedCommandError();
+                default -> SportSimView.unrecognizedCommandError();
             }
         }
     }
@@ -195,7 +203,7 @@ public class SportSimControl {
                     }
                     exit = true;
                 }
-                default -> SportSimView.printUnrecognizedCommandError();
+                default -> SportSimView.unrecognizedCommandError();
             }
         }
     }
@@ -267,7 +275,7 @@ public class SportSimControl {
                     exit = true;
                     break;
                 default:
-                    SportSimView.printUnrecognizedCommandError();
+                    SportSimView.unrecognizedCommandError();
             }
         }
         return workingTeams;
@@ -302,7 +310,7 @@ public class SportSimControl {
                 case '4' -> workingPlayers = changePlayersOrder(workingPlayers);
                 case '5' -> workingPlayers = filterPlayers(workingPlayers, model.getPlayers(), filter);
                 case 'Q' -> exit = true;
-                default -> SportSimView.printUnrecognizedCommandError();
+                default -> SportSimView.unrecognizedCommandError();
             }
         }
     }
@@ -344,7 +352,7 @@ public class SportSimControl {
                 case '4' -> workingPlayers = changePlayersOrder(workingPlayers);
                 case '5' -> workingPlayers = filterPlayers(workingPlayers, team.getPlayers(), filter);
                 case 'Q' -> exit = true;
-                default -> SportSimView.printUnrecognizedCommandError();
+                default -> SportSimView.unrecognizedCommandError();
             }
         }
     }
@@ -449,7 +457,7 @@ public class SportSimControl {
                     }
                     exit = true;
                 }
-                default -> SportSimView.printUnrecognizedCommandError();
+                default -> SportSimView.unrecognizedCommandError();
             }
         }
     }
@@ -507,7 +515,7 @@ public class SportSimControl {
                     exit = true;
                     break;
                 default:
-                    SportSimView.printUnrecognizedCommandError();
+                    SportSimView.unrecognizedCommandError();
             }
         }
         return workingPlayers;

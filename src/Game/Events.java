@@ -23,7 +23,7 @@ public class Events{
 		cur_events=0;
 	}
 
-	public List<Things> getGame_events_list() {
+	public List<Things> getGameEventsList() {
 		return game_events_list;
 	}
 
