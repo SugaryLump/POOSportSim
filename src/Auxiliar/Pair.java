@@ -7,6 +7,11 @@ public class Pair<L,R> {
         this.l = l;
         this.r = r;
     }
+    public Pair(){
+	    this.l = null;
+	    this.r = null;
+    }
+
     public L getL(){ return l; }
     public R getR(){ return r; }
     public void setL(L l){ this.l = l; }

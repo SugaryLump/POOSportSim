@@ -3,6 +3,7 @@ package MVCClasses;
 import Team.*;
 import Players.*;
 import Auxiliar.*;
+import Game.*;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -20,13 +21,14 @@ enum PlayerSortMode {
 
 public class SportSimControl {
     private final String[] sports;
-    //private Simulator currentSimulator;
+    private Simulator currentSimulator;
     private boolean unsavedChanges;
     private SportSimModel model;
     private SportSimView view;
 
     public SportSimControl() {
         this.unsavedChanges = false;
+	this.currentSimulator = new Simulator();
         this.view = new SportSimView();
         this.model = new SportSimModel();
         this.sports = new String[]{"Futebol"};
@@ -38,8 +40,7 @@ public class SportSimControl {
         while (!exit) {
             switch (view.viewMainMenu()) {
                 case '1':
-                    //simulationMenu();
-                    System.out.println("Funcionalidade ainda não implementada!");
+                    simulationMenu();
                     break;
                 case '2':
                     teamMenu();
@@ -66,6 +67,58 @@ public class SportSimControl {
                     SportSimView.printUnrecognizedCommandError();
             }
         }
+    }
+
+
+    //SIMULATOR
+
+    public void simulationMenu(){
+	    boolean exit = false, loaded = false;
+	    while(!exit){
+		    switch(view.viewSim()){
+			    case '1':
+				    String team1 = view.teamselect();
+				    String team2 = view.teamselect();
+				    if(!(model.teamNameExists(team2)) && !(model.teamNameExists(team1)))
+					    view.teamNotFound();
+				    else
+					    loaded = true;
+					    currentSimulator.teamSelection(model.teamNameGet(team1),model.teamNameGet(team2));
+			    case '2':
+				    view.game_stats(currentSimulator);
+
+			    case '3':
+				    if (loaded)
+					    rungame();
+				    else
+					    view.loadGame();
+			    case 'Q':
+				      if(unsavedChanges)
+					      exit = view.exitConfirm();
+				      else
+					      exit = true;
+			    default:
+				    SportSimView.printUnrecognizedCommandError();
+		    }
+	    }
+    }
+
+    public void rungame(){
+	    boolean done = false;
+	    int x = 0;
+	    while(!done){
+		    view.printGame(currentSimulator.get_game().getTeams());
+		    switch(view.getPause()){
+			    case '1':
+				    currentSimulator.l(false);
+			    default:
+				    x = currentSimulator.l(true);
+				    
+		    }
+		    if (x == 100)
+			    done = true;
+	    }
+	    view.printResults(currentSimulator.get_game());
     }
 
     //EQUIPAS

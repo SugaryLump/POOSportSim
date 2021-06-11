@@ -3,6 +3,11 @@ import Team.*;
 import Players.*;
 
 import java.util.TreeSet;
+
+import Auxiliar.Pair;
+import Game.Game;
+import Game.Simulator;
+
 import java.util.Scanner;
 
 public class SportSimView {
@@ -15,6 +20,57 @@ public class SportSimView {
 
     public void welcomeMessage(){
         System.out.println("Bem vindo ao simulador de desportos.");
+    }
+
+    public String teamselect() {
+        System.out.println("Insira o nome de uma equipa para a sua simulação:");
+
+        return (input.nextLine());
+    }
+
+    public void game_stats(Simulator s){
+	    System.out.println("""
+			    Estado da Simulação
+
+			    Resultado-""");
+	    System.out.print(s.get_game().getGameScore().getL());
+	    System.out.print(s.get_game().getTeams().getL().getTeamName());
+	    System.out.println("\n");
+	    System.out.print(s.get_game().getGameScore().getR());
+	    System.out.print(s.get_game().getTeams().getR().getTeamName());
+    }
+
+    public void printResults(Game g){
+	    //dar print do resultado final com o numero de "eventos"
+    }
+
+    public void teamNotFound(){
+	    //Dar print de um erro a dizer que a equpa nao existe;
+    }
+
+    public void loadGame(){
+	    //Dar print de um erro a dizer para dar load a um jogo
+    }
+
+    public void printGame(Pair<Team,Team> teams){
+	    //Dar print as estatisticas de modo Fancy-ish
+    }
+
+    public char getPause(){
+	    //Durante a simulação o jogo pode ser "pausado", mas ainda nao foi implementado nada nesse estado
+	    //pedir ao utilizador se quer pausar o jogo e se sim dar retunr de um char (1 if yes)
+    }
+
+    public char viewSim() {
+        System.out.println("""
+                Selecione uma das opções abaixo com o seu índice.
+
+                1- Selecionar equipas
+                2- Inicializar a simulação
+                Q- Saír
+                """);
+
+        return (input.nextLine().charAt(0));
     }
 
     public void printCredits() {System.out.println("Alexandre Flores, A93220\nRita Lino, A93196\nMiguel Gomes, A93294");}

@@ -3,7 +3,6 @@ package MVCClasses;
 import Auxiliar.Comparators.*;
 import Players.*;
 import Team.*;
-import com.sun.source.tree.Tree;
 
 import java.io.Serializable;
 import java.util.Comparator;
@@ -100,6 +99,14 @@ public class SportSimModel implements Serializable {
                 return true;
         }
         return false;
+    }
+
+    public Team teamNameGet(String name) {
+        for (Team t : this.teams) {
+            if (t.getTeamName().equals(name))
+                return t;
+        }
+        return null;
     }
 
     public boolean playerNameExists(String name) {
