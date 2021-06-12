@@ -113,8 +113,10 @@ public class SportSimControl {
 			            SportSimView.gameNotLoadedError();
 				    break;
 			    case '3':
-				    if (loaded)
-					    runGameMenu();
+				    if (loaded) {
+                        runGameMenu();
+                        view.game_stats(currentSimulator);
+                    }
 				    else
 					    SportSimView.gameNotLoadedError();
 				    break;
@@ -132,12 +134,10 @@ public class SportSimControl {
 	    boolean done = false;
 	    int x;
 	    while(!done){
-		    view.printGame(currentSimulator.get_game().getTeams());
             x = currentSimulator.l(true);
 		    if (x == 100)
 			    done = true;
 	    }
-	    view.printResults(currentSimulator.get_game());
 	    model.updateInfoFromGame(currentSimulator.get_game());
     }
 

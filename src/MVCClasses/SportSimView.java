@@ -38,24 +38,7 @@ public class SportSimView {
 	    System.out.println("\n");
 	    System.out.print(s.get_game().getGameScore().getR());
 	    System.out.print(s.get_game().getTeams().getR().getTeamName());
-    }
-
-    public void printResults(Game g){
-	    //dar print do resultado final com o numero de "eventos"
-    }
-
-    public void teamNotFound(){
-	    //Dar print de um erro a dizer que a equpa nao existe;
-    }
-
-    public void printGame(Pair<Team,Team> teams){
-	    //Dar print as estatisticas de modo Fancy-ish
-    }
-
-    public char getPause(){
-	    //Durante a simulação o jogo pode ser "pausado", mas ainda nao foi implementado nada nesse estado
-	    //pedir ao utilizador se quer pausar o jogo e se sim dar retunr de um char (1 if yes)
-        return askForString("Pretende pausar o jogo?", 1, 1).charAt(0);
+        System.out.println("\n");
     }
 
     public char viewSim() {
@@ -189,17 +172,6 @@ public class SportSimView {
                 , filter.getAgeBounds().toString());
 
         return input.nextLine().charAt(0);
-    }
-
-    private void printPlayers (TreeSet<Player> players) {
-        int i = 1;
-        for (Player player : players) {
-            System.out.printf("%d- %-15s %-20s  %-3d\n",
-                    i++,
-                    "PLAYERSPORTHERE",
-                    player.getName(),
-                    player.overallAbility());
-        }
     }
 
     public boolean exitConfirm () {
