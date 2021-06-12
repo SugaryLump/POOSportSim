@@ -96,7 +96,7 @@ public class SportSimView {
     public void printTeamsTable(TreeSet<Team> teams) {
         int i = 1;
         System.out.println("----------------------------------------------------------------------------------------------------------------------------------\n" +
-                "#  Nome                                      G     V   D   E");
+                "#  Nome                                      H     V   D   E");
         for (Team team : teams) {
             System.out.printf("%d- %-40s  %-5d %-3d %-3d %-3d%n",
                     i++,
@@ -136,7 +136,7 @@ public class SportSimView {
     }
 
     public char viewEditTeam(Team t) {
-        System.out.println("Habilidade Global: " + t.getTeamGlobalAbillity() +
+        System.out.println("Habilidade Global: " + t.overallAbilityTeam() +
                 "\n(1)Nome: " + t.getTeamName() +
                 "\n(2)Vitórias: " + t.getWins() +
                 "\n(3)Derrotas: " + t.getLosses() +

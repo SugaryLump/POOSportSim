@@ -102,8 +102,8 @@ public class Game {
 			    ting.set_event("Scores");
 			    ting.set_timestamp(events.getLow());
 			    ting.set_effect_on_game("Goal");
-			    double l =Math.random()+ getTeams().getL().getTeamGlobalAbillity();
-			    double r =Math.random()+ getTeams().getR().getTeamGlobalAbillity();
+			    double l =Math.random()+ getTeams().getL().overallAbilityTeam();
+			    double r =Math.random()+ getTeams().getR().overallAbilityTeam();
 			    if (l>r) getGameScore().setL(getGameScore().getL()+1);
 			    else getGameScore().setR(getGameScore().getR()+1);
 

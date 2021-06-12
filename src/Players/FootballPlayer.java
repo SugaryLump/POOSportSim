@@ -201,27 +201,27 @@ public class FootballPlayer extends Player{
 
     public int overallAbility() {
         switch (this.position) {
-            case ("Defense"):
+            case ("Defesa"):
                 int a = this.velocity + this.resistance + this.dexterity + this.impulse
                         + this.headGame + this.shootingSkill + this.shootingSkill + this.strength;
                 int b = a / 8;
                 return b;
-            case ("FullBack"):
+            case ("Lateral"):
                 int c = this.velocity + this.resistance + this.dexterity + this.impulse
                         + this.headGame + this.shootingSkill + this.shootingSkill + this.crossingSkill;
                 int d = c / 8;
                 return d;
-            case ("Goalkeeper"):
+            case ("Guarda-Redes"):
                 int e = this.velocity + this.resistance + this.dexterity + this.impulse
                         + this.headGame + this.shootingSkill + this.shootingSkill + this.elasticity;
                 int f = e / 8;
                 return f;
-            case ("Midfield"):
+            case ("Medio"):
                 int h = this.velocity + this.resistance + this.dexterity + this.impulse
                         + this.headGame + this.shootingSkill + this.shootingSkill + this.ballRecuperation;
                 int i = h / 8;
                 return i;
-            case ("Striker"):
+            case ("Avancado"):
                 int j = this.velocity + this.resistance + this.dexterity + this.impulse
                         + this.headGame + this.shootingSkill + this.shootingSkill + this.receptionSkill;
                 int k = j / 8;
