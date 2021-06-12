@@ -86,26 +86,41 @@ public class SportSimControl {
 			    case '1':
 			        TreeSet<Team> displayTeams = model.getTeams().stream()
                             .collect(Collectors.toCollection(() -> new TreeSet<>(model.getNewTeamComparator())));
-			        view.printTeamsTable(displayTeams);
-			        Team team1 = (Team)getFromTreeAtIndex(displayTeams, view.askForInt("Selecione uma equipa", 1, displayTeams.size()));
-                    view.printTeamsTable(displayTeams.stream()
-                            .filter(t -> t.sport().equals(team1.sport()) && !t.equals(team1))
-                            .collect(Collectors.toCollection(() -> new TreeSet<>(model.getNewTeamComparator()))));
-                    Team team2 = (Team)getFromTreeAtIndex(displayTeams, view.askForInt("Selecione uma equipa", 1, displayTeams.size()));
-                    loaded = true;
-                    currentSimulator.teamSelection(team1, team2);
+			        if (displayTeams.size() == 0) {
+			            SportSimView.noValidTeamsError();
+                    }
+			        else {
+                        view.printTeamsTable(displayTeams);
+                        Team team1 = (Team) getFromTreeAtIndex(displayTeams, view.askForInt("Selecione uma equipa", 1, displayTeams.size()));
+                        displayTeams = displayTeams.stream()
+                                .filter(t -> t.sport().equals(team1.sport()) && !t.equals(team1))
+                                .collect(Collectors.toCollection(() -> new TreeSet<>(model.getNewTeamComparator())));
+                        if (displayTeams.size() == 0) {
+                            view.printTeamsTable(displayTeams);
+                            Team team2 = (Team) getFromTreeAtIndex(displayTeams, view.askForInt("Selecione uma equipa", 1, displayTeams.size()));
+                            loaded = true;
+                            currentSimulator.teamSelection(team1, team2);
+                        }
+                    }
+                    break;
 			    case '2':
-				    view.game_stats(currentSimulator);
-
+			        if (loaded)
+			            view.game_stats(currentSimulator);
+			        else
+			            SportSimView.gameNotLoadedError();
+				    break;
 			    case '3':
 				    if (loaded)
 					    runGameMenu();
 				    else
 					    SportSimView.gameNotLoadedError();
+				    break;
 			    case 'Q':
-					      exit = true;
+			        exit = true;
+			        break;
 			    default:
 				    SportSimView.unrecognizedCommandError();
+				    break;
 		    }
 	    }
     }
@@ -115,13 +130,7 @@ public class SportSimControl {
 	    int x;
 	    while(!done){
 		    view.printGame(currentSimulator.get_game().getTeams());
-		    switch(view.getPause()){
-			    case '1':
-				    currentSimulator.l(false);
-			    default:
-				    x = currentSimulator.l(true);
-				    
-		    }
+            x = currentSimulator.l(true);
 		    if (x == 100)
 			    done = true;
 	    }

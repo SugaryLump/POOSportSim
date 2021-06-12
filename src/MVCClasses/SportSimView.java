@@ -63,7 +63,8 @@ public class SportSimView {
                 Selecione uma das opções abaixo com o seu índice.
 
                 1- Selecionar equipas
-                2- Inicializar a simulação
+                2- Ver resultados
+                3- Inicializar a simulação
                 Q- Saír
                 """);
 
@@ -298,6 +299,8 @@ public class SportSimView {
     public static void nameExistsError() {System.out.println("Esse nome já existe.");}
 
     public static void noValidPlayersError() {System.out.println("Nenhum jogador pode ser adicionado.");}
+
+    public static void noValidTeamsError() {System.out.println("Nenhuma equipa pode ser adicionado.");}
 
     public static void playerNotFoundError(String player) {System.out.println(player + " não foi encontrado.");}
 

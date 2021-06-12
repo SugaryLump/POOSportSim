@@ -73,7 +73,7 @@ public class Game {
 	    events.rand_stuf();
 	    int outcome = events.random();
 	    Things ting = new Things();
-	    if(events.getCur_events() >= events.getEvents_game() && this.time > 90)
+	    if(this.time >= 90)
 		    return 100;
 	    switch(outcome){
 		    case 23:
@@ -116,6 +116,7 @@ public class Game {
 		    default:
 			    break;
 	    }
+	    this.time = events.getLow();
 	    List<Things> lt = events.getGameEventsList();
 	    lt.add(ting);
 	    return 0;

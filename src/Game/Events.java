@@ -13,9 +13,9 @@ public class Events{
 
 
 	public Events(){
-		List <Things> game_events_list = new ArrayList<>();
-		events_game = 0;
-		cur_events = 0;
+		this.game_events_list = new ArrayList<>();
+		this.events_game = 0;
+		this.cur_events = 0;
 	}
 
 	public Events(int max){
@@ -63,7 +63,7 @@ public class Events{
 	
 		Random r = new Random();
 		Things t = new Things();
-		int high = 90;
+		int high = 91;
 		int result = r.nextInt(high-this.low) + low;
 		this.low = result;
 		t.set_timestamp(result);
