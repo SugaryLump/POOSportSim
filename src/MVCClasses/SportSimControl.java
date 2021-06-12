@@ -95,11 +95,14 @@ public class SportSimControl {
                         displayTeams = displayTeams.stream()
                                 .filter(t -> t.sport().equals(team1.sport()) && !t.equals(team1))
                                 .collect(Collectors.toCollection(() -> new TreeSet<>(model.getNewTeamComparator())));
-                        if (displayTeams.size() == 0) {
+                        if (displayTeams.size() != 0) {
                             view.printTeamsTable(displayTeams);
                             Team team2 = (Team) getFromTreeAtIndex(displayTeams, view.askForInt("Selecione uma equipa", 1, displayTeams.size()));
                             loaded = true;
                             currentSimulator.teamSelection(team1, team2);
+                        }
+                        else {
+                            SportSimView.noValidPlayersError();
                         }
                     }
                     break;
