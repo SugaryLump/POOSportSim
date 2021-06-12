@@ -48,6 +48,7 @@ public class SportSimView {
                 1- Selecionar equipas
                 2- Ver resultados
                 3- Inicializar a simulação
+                4- Reiniciar simulador
                 Q- Saír
                 """);
 

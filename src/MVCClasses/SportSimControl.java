@@ -120,6 +120,8 @@ public class SportSimControl {
 				    else
 					    SportSimView.gameNotLoadedError();
 				    break;
+                case '4':
+                    currentSimulator.set_game(new Game());
 			    case 'Q':
 			        exit = true;
 			        break;
