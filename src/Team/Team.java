@@ -11,7 +11,6 @@ public class Team implements Serializable {
     private int wins; // Wins per season
     private int losses; //Losses per season
     private int ties; // Ties per season
-    private int teamGlobalAbillity; // Team Global Average Ability
     private ArrayList<Player> players; // Player List
 
     public Team (String name) {
@@ -20,7 +19,6 @@ public class Team implements Serializable {
         wins = 0;
         losses = 0;
         ties = 0;
-        teamGlobalAbillity = 0;
         players = new ArrayList<>();
     }
 
@@ -30,19 +28,17 @@ public class Team implements Serializable {
         this.wins = clone.getWins();
         this.losses = clone.getLosses();
         this.ties = clone.getTies();
-        this.teamGlobalAbillity = clone.getTeamGlobalAbillity();
         this.players = new ArrayList<Player>();
         for(Player p : clone.getPlayers())
             this.players.add(p);
     }
 
-    public Team (String name, int score, int wins, int losses, int ties, int teamGlobalAbillity, ArrayList<Player> players) {
+    public Team (String name, int score, int wins, int losses, int ties, ArrayList<Player> players) {
         this.teamName = name;
         this.score = score;
         this.wins = wins;
         this.losses = losses;
         this.ties = ties;
-        this.teamGlobalAbillity = teamGlobalAbillity;
         this.players = players;
     }
 
@@ -82,9 +78,6 @@ public class Team implements Serializable {
         return ties;
     }
 
-    public int getTeamGlobalAbillity(){
-	return teamGlobalAbillity;
-    }
 
     public ArrayList<Player> getPlayers() {
         return players;
@@ -110,9 +103,6 @@ public class Team implements Serializable {
         this.ties = ties;
     }
 
-    public void setTeamGlobalAbillity(int teamGlobalAbillity){
-	this.teamGlobalAbillity = teamGlobalAbillity;
-    }
 
     public void setPlayers(ArrayList<Player> players) {
         this.players = players;
@@ -146,10 +136,6 @@ public class Team implements Serializable {
         team.setWins(this.wins);
         team.setScore(this.score);
         team.setLosses(this.losses);
-    }
-
-    public void movePlayer(int index, Team team){
-        // to be discussed
     }
 
     public void movePlayer(String playerName, Team team){

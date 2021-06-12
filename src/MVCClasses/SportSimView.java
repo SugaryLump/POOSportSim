@@ -101,7 +101,7 @@ public class SportSimView {
             System.out.printf("%d- %-40s  %-5d %-3d %-3d %-3d%n",
                     i++,
                     team.getTeamName(),
-                    team.getTeamGlobalAbillity(),
+                    team.overallAbilityTeam(),
                     team.getWins(),
                     team.getLosses(),
                     team.getTies());

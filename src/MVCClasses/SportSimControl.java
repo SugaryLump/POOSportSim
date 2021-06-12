@@ -525,6 +525,7 @@ public class SportSimControl {
     public void exportMenu() {
         try {
             FileHandler.exportModelToFile(this.model, view.askForString("Qual o nome do ficheiro?", 1, 30));
+            this.unsavedChanges = false;
         }
         catch (IOException e) {
             SportSimView.showException(e);
